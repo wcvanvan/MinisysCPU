@@ -16,9 +16,9 @@ module Executs32(Read_data_1,Read_data_2,Sign_extend,Function_opcode,Exe_opcode,
     input  		 Sftmd;            // 来自控制单元的，表明是移位指令
     input        Jr;               // 来自控制单元，表明是JR指令
 
-    output reg  Zero;              // 为1表明计算值为0 
+    output  Zero;              // 为1表明计算值为0
     output reg [31:0] ALU_Result;        // 计算的数据结果
-    output reg [31:0] Addr_Result;		// 计算的地址结果
+    output [31:0] Addr_Result;		// 计算的地址结果
 
     wire[31:0] Ainput,Binput; // two operands for calculation
     wire[5:0] Exe_code; // use to generate ALU_contrl. (I_format==0) ? Function_opcode : { 3'b000 , Opcode[2:0] };
@@ -26,12 +26,6 @@ module Executs32(Read_data_1,Read_data_2,Sign_extend,Function_opcode,Exe_opcode,
     wire[2:0] Sftm_code; // identify the types of shift instruction, equals to Function_opcode[2:0]
     reg[31:0] Shift_Result; // the result of shift operation
     reg[31:0] ALU_output_mux; // the result of arithmetic or logic calculation
-    
-    
-//    wire[32:0] Branch_Addr; // the calculated address of the instruction, Addr_Result is Branch_Addr[31:0]
-
-
-    // ALUmux input_mux(Read_data_1, Read_data_2, Sign_extend, ALUSrc, Ainput, Binput);
 
     assign Ainput = Read_data_1;
     assign Binput = (ALUSrc == 0) ? Read_data_2 : Sign_extend[31:0];
@@ -44,29 +38,24 @@ module Executs32(Read_data_1,Read_data_2,Sign_extend,Function_opcode,Exe_opcode,
 
     assign Sftm_code = Function_opcode[2:0]; //the code of shift operation
 
-    // assign Zero = ALU_output_mux == 0 ? 1 : 0;
+    assign Addr_Result = PC_plus_4 + (Sign_extend << 2);
+    assign Zero = ALU_output_mux == 0 ? 1 : 0;
 
     always @* begin
         case(ALU_ctl)
             3'b000: ALU_output_mux = Ainput & Binput; // and, andi
             3'b001: ALU_output_mux = Ainput | Binput; // or, ori
-
-            3'b010: ALU_output_mux = $signed(Ainput) + $signed(Binput); // add, addi, lw, sw
-            3'b011: ALU_output_mux = $signed(Ainput) + $signed(Binput); // addu, addiu
-
+            3'b010: ALU_output_mux = Ainput + Binput; // add, addi, lw, sw
+            3'b011: ALU_output_mux = Ainput + Binput; // addu, addiu
             3'b100: ALU_output_mux = Ainput ^ Binput; // xor, xori
-
             3'b101: ALU_output_mux = ~(Ainput | Binput); // nor, !! lui
-
-            3'b110: ALU_output_mux = $signed(Ainput) - $signed(Binput); // sub, slti, beq, bne
-            // 3'b111: ALU_output_mux = $signed(Ainput) - $signed(Binput); // subu, sltiu
-            3'b111: ALU_output_mux = Ainput - Binput; // subu, sltiu
-
+            3'b110: ALU_output_mux = Ainput - Binput; // sub, slti, beq, bne
+            3'b111: ALU_output_mux = Ainput - Binput;
             default: ALU_output_mux = 32'h0000_0000;
         endcase
-    // end
+    end
 
-    // always @* begin // six types of shift instructions
+    always @* begin // six types of shift instructions
         if(Sftmd) begin
             case(Sftm_code[2:0])
                 3'b000:Shift_Result = Binput << Shamt; //Sll rd,rt,shamt 00000
@@ -80,16 +69,13 @@ module Executs32(Read_data_1,Read_data_2,Sign_extend,Function_opcode,Exe_opcode,
         end
         else
             Shift_Result = Binput;
-    // end
+    end
 
-    // always @* begin
+    always @* begin
         //set type operation (slt, slti, sltu, sltiu)
-                if(((Exe_opcode == 0) && (Function_opcode == 6'b101011)) || Exe_opcode == 6'b001011) // unsigned
-                    ALU_Result = (Ainput < Binput) ? 1 : 0;
-                else if(((Exe_opcode == 0) && (Function_opcode == 6'b101010)) || Exe_opcode == 6'b001010) // signed
-                    ALU_Result = ($signed(Ainput) < $signed(Binput)) ? 1 : 0;
+        if(((ALU_ctl==3'b111) && (Exe_code[3]==1)) || Exe_opcode == 6'b001010 || Exe_opcode == 6'b001011)
+            ALU_Result = ($signed(Ainput) < $signed(Binput)) ? 1 : 0;
         //lui operationa
-		// else if((ALU_ctl==3'b101) && (Exe_opcode == 6'b001111))
 		else if(Exe_opcode == 6'b001111)
         	ALU_Result[31:0]= {Sign_extend[15:0], 16'h0000};
 		//shift operation
@@ -100,35 +86,6 @@ module Executs32(Read_data_1,Read_data_2,Sign_extend,Function_opcode,Exe_opcode,
             ALU_Result = 0;
         else
     		ALU_Result = ALU_output_mux[31:0];
-	// end
-
-    // always @*begin
-        if(Exe_opcode == 6'b000100 || Exe_opcode == 6'b000101) begin
-            if(Exe_opcode[0] == 1) begin // bne
-                if(Ainput != Binput) begin
-                    Addr_Result = PC_plus_4 + (Sign_extend << 2);
-                    Zero = 0;
-                end
-                else begin
-                    Addr_Result = PC_plus_4;
-                    Zero = 1;
-                end
-            end
-            else begin // beq
-                if(Ainput == Binput) begin
-                    Addr_Result = PC_plus_4 + (Sign_extend << 2);
-                    Zero = 1;
-                end
-                else begin
-                    Addr_Result = PC_plus_4;
-                    Zero = 0;
-                end
-            end
-        end
-        else begin
-            Addr_Result = PC_plus_4 + (Sign_extend << 2);
-            Zero = ALU_output_mux == 0 ? 1 : 0;
-        end
-    end
+	end
 
 endmodule
