@@ -30,7 +30,6 @@ module MemOrIO(mRead,
                io_rdata,
                r_wdata,
                r_rdata,
-               write_data,
                LEDCtrl,
                SwitchCtrl,
                data_to_dmem,
@@ -46,7 +45,6 @@ module MemOrIO(mRead,
     input[23:0] io_rdata; // data read from IO,16 bits
     output [31:0] r_wdata; // data to register
     input[31:0] r_rdata; // data read from register
-    output reg[23:0] write_data; // data to memory or I/O
     output reg[31:0] data_to_dmem; // sw data to dmem
     output reg[23:0] data_to_io; // sw data to io
     output LEDCtrl; // LED Chip Select
@@ -70,12 +68,5 @@ module MemOrIO(mRead,
             data_to_dmem = 32'hZZZZZZZZ;
             data_to_io   = 24'b0;
         end
-    end
-    always @* begin
-        if ((mWrite == 1)||(ioWrite == 1))
-        //wirte_data could go to either memory or IO. where is it from?
-            write_data = r_rdata[23:0]; //
-        else
-            write_data = 32'hZZZZZZZZ;
     end
 endmodule
