@@ -30,8 +30,6 @@ module MemOrIO(mRead,
                io_rdata,
                r_wdata,
                r_rdata,
-               LEDCtrl,
-               SwitchCtrl,
                data_to_dmem,
                data_to_io);
     
@@ -47,8 +45,6 @@ module MemOrIO(mRead,
     input[31:0] r_rdata; // data read from register
     output reg[31:0] data_to_dmem; // sw data to dmem
     output reg[23:0] data_to_io; // sw data to io
-    output LEDCtrl; // LED Chip Select
-    output SwitchCtrl; // Switch Chip Select
     
     assign addr_out = addr_in;
     // The data write to register may be from memory or io.
