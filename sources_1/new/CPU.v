@@ -23,9 +23,7 @@
 module CPU(input clk,
            input rst,
            input [23:0] io_rdata,
-           output [23:0] io_wdata,
-           output LEDCtrl,
-           output SwitchCtrl
+           output [23:0] io_wdata
            );
     
     wire [31:0] pcplus4;
@@ -161,8 +159,6 @@ module CPU(input clk,
     .io_rdata(io_rdata),
     .r_wdata(r_wdata),
     .r_rdata(mem_or_io_data),
-    .LEDCtrl(LEDCtrl),
-    .SwitchCtrl(SwitchCtrl),
     .data_to_dmem(m_wdata),
     .data_to_io(io_wdata));
 endmodule
