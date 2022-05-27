@@ -51,8 +51,6 @@ module MemOrIO(mRead,
     // While the data is from io, it should be the lower 16bit of r_wdata.
     assign r_wdata = (mRead == 1'b1) ? m_rdata : {8'b0, io_rdata};
     // Chip select signal of Led and Switch are all active high;
-    assign LEDCtrl    = ioWrite;
-    assign SwitchCtrl = ioRead;
     always @* begin
         if (mWrite) begin
             data_to_dmem = r_rdata;
