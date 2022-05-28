@@ -60,6 +60,8 @@ module CPU(input clk,
     wire alusrc;
     wire mem_or_io_to_reg;
     wire regwrite;
+    wire write_HI_LO;
+    wire [1:0] move_HI_LO;
     wire memwrite;
     wire memread;
     wire ioread;
@@ -67,6 +69,8 @@ module CPU(input clk,
     wire iformat;
     wire sftmd;
     wire [1:0] aluop;
+
+    wire [31:0] ALU_HI, ALU_LO;
     
     wire [31:0] mem_or_io_data;
     wire [31:0] alu_result;
@@ -81,6 +85,8 @@ module CPU(input clk,
     .ALUSrc(alusrc),
     .MemOrIOtoReg(mem_or_io_to_reg), // modify
     .RegWrite(regwrite),
+    .write_HI_LO(write_HI_LO),
+    .move_HI_LO(move_HI_LO),
     .MemWrite(memwrite),
     .MemRead(memread), // modify
     .IORead(ioread), // modify
@@ -107,6 +113,12 @@ module CPU(input clk,
     .ALU_result(alu_result),
     .opcplus4(pcplus4),
     .Instruction(instruction),
+
+    .write_HI_LO(write_HI_LO),
+    .move_HI_LO(move_HI_LO),
+    .ALU_HI(ALU_HI),        // HI data from ALU
+    .ALU_LO(ALU_LO), 
+
     .read_data_1(read_data_1),
     .read_data_2(mem_or_io_data),
     .Sign_extend(sign_extend)
@@ -128,7 +140,9 @@ module CPU(input clk,
     .Jr(jr),
     .Zero(zero),
     .ALU_Result(alu_result),
-    .Addr_Result(addr_in)
+    .Addr_Result(addr_in),
+    .HI_result(ALU_HI),
+    .LO_result(ALU_LO)
     );
     
     wire [31:0] m_wdata;
