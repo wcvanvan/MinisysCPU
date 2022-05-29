@@ -21,13 +21,6 @@
 module regfiles(
     input clock, reset,
     input regWrite,
-    // following two are for mult/div, if they are valid, regWrite must be zero!
-    // when using HI_LO_move, writeDst is also used
-    input HI_LO_write,       // 1 for write both, 0 for do not write
-    input [1:0] HI_LO_move,  // 10 for move HI; 01 for move LO; 00 for do not move HI or LO
-    input [32:0] HI_data,    // data going to write HI
-    input [32:0] LO_data,    // data going to write LO
-
     input [4:0] read1,
     input [4:0] read2,
     input [4:0] writeDst,
@@ -36,22 +29,6 @@ module regfiles(
     output [31:0] data2
     );
     reg [31:0] registers[0:31];
-
-    reg [31:0] HI;
-    reg [31:0] LO;
-
-    always @(posedge clock) begin
-        if (HI_LO_write) begin
-            HI <= HI_data;
-            LO <= LO_data;
-        end
-
-        case (HI_LO_move)
-            2'b10: registers[writeDst] <= HI;
-            2'b01: registers[writeDst] <= LO;
-        endcase
-    end
-
     always @(posedge clock) begin
         if(reset == 1'b1) begin
             registers[0] <= 32'b0;
@@ -103,12 +80,6 @@ module Decode32(
     input [31:0] ALU_result,    // data from alu
     input [31:0] opcplus4,      // PC + 4
     input [31:0] Instruction,   // the 32-bit instruction
-
-    input write_HI_LO,
-    input [1:0] move_HI_LO,
-    input [31:0] ALU_HI,        // HI data from ALU
-    input [31:0] ALU_LO,        // LO data from ALU
-
     output [31:0] read_data_1,    // the data in the reg determined by rs
     output [31:0] read_data_2,    // the data in the reg determined by rt
     output [31:0] Sign_extend     // the extended 32-bit immediate
@@ -124,12 +95,6 @@ module Decode32(
         .clock(clock),
         .reset(reset),
         .regWrite(RegWrite),
-
-        .HI_LO_write(write_HI_LO),
-        .HI_LO_move(move_HI_LO),
-        .HI_data(ALU_HI),
-        .LO_data(ALU_LO),
-
         .read1(rs),
         .read2(rt),
         .writeDst(writeOrJal),
