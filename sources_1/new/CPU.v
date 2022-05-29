@@ -21,17 +21,21 @@
 
 
 module CPU(input clk,
-           input rst,
            input [23:0] io_rdata,
-           output [23:0] io_wdata);
+           output [23:0] io_wdata,
+           input fpga_rst,         // active high
+           input start_uart,       // active high
+           input rx,               // receive data by uart
+           output tx);             // send data by uart
     
     wire clk_out1, clk_out2;
     cpuclk cpuclk(
     .clk_in1(clk),
-    .clk_out1(clk_out1),
-    .clk_out2(clk_out2)
+    .clk_out1(clk_out1), // for cpu use
+    .clk_out2(clk_out2) // for uart device use
     );
     
+    wire rst;
     wire [31:0] pcplus4;
     wire [31:0] addr_in;
     wire [31:0] addr_out;
@@ -45,6 +49,45 @@ module CPU(input clk,
     wire [31:0] instruction;
     wire [31:0] branch_base_addr;
     wire [31:0] link_addr;
+    wire [13:0] rom_addr_o;
+
+      // UART Programmer Pinouts
+    wire upg_clk_o;
+    wire upg_wen_o; //Uart write out enable
+    wire upg_done_o; //Uart rx data have done
+    //data to which memory unit of program_rom/dmemory32
+    wire [14:0] upg_adr_o;
+    //data to program_rom or dmemory32
+    wire [31:0] upg_dat_o;
+    
+    wire spg_bufg;
+    BUFG U1(.I(start_uart), .O(spg_bufg)); // de-twitter
+    // Generate UART Programmer reset signal
+    reg upg_rst;
+    always @ (posedge clk) begin
+        if (spg_bufg) upg_rst = 0;
+        if (fpga_rst) upg_rst = 1;
+    end
+    assign rst = fpga_rst | !upg_rst;
+    
+    uart_bmpg_0 uart (
+    .upg_clk_i(clk_out2),
+    .upg_rst_i(upg_rst),
+    .upg_rx_i(rx)
+    );
+    
+    programrom pr(
+    .rom_clk_i(clk_out1),
+    .rom_adr_i(rom_addr_o),
+    .upg_rst_i(upg_rst),
+    .upg_clk_i(upg_clk_o),
+    .upg_wen_i(upg_wen_o),
+    .upg_adr_i(upg_adr_o),
+    .upg_dat_i(upg_dat_o),
+    .upg_done_i(upg_done_o)
+    );
+    
+    
     Ifetc32 ifetc32(
     .clock(clk_out1),
     .reset(rst),
@@ -58,8 +101,10 @@ module CPU(input clk,
     .branch_base_addr(pcplus4),
     .link_addr(link_addr),
     .Branch(branch),
-    .nBranch(nbranch)
+    .nBranch(nbranch),
+    .rom_addr_o(rom_addr_o)
     );
+
     wire [5:0] opcode = instruction[31:26];
     wire [5:0] funct  = instruction[5:0];
     wire regdst;
@@ -143,7 +188,13 @@ module CPU(input clk,
     .memWrite(memwrite),
     .address(addr_out),
     .writeData(m_wdata),
-    .readData(m_rdata)
+    .readData(m_rdata),
+    .upg_rst_i(upg_rst),
+    .upg_clk_i(upg_clk_o),
+    .upg_wen_i(upg_wen_o),
+    .upg_adr_i(upg_adr_o),
+    .upg_dat_i(upg_dat_o),
+    .upg_done_i(upg_done_o)
     );
     
     wire [31:0] sign_extend_shift_left = sign_extend << 2;
@@ -167,4 +218,6 @@ module CPU(input clk,
     .r_rdata(mem_or_io_data),
     .data_to_dmem(m_wdata),
     .data_to_io(io_wdata));
+    
+    
 endmodule
