@@ -23,8 +23,14 @@
 module CPU(input clk,
            input rst,
            input [23:0] io_rdata,
-           output [23:0] io_wdata
-           );
+           output [23:0] io_wdata);
+    
+    wire clk_out1, clk_out2;
+    cpuclk cpuclk(
+    .clk_in1(clk),
+    .clk_out1(clk_out1),
+    .clk_out2(clk_out2)
+    );
     
     wire [31:0] pcplus4;
     wire [31:0] addr_in;
@@ -35,12 +41,12 @@ module CPU(input clk,
     wire jmp;
     wire branch;
     wire nbranch;
-    wire [31:0] read_data_1; 
+    wire [31:0] read_data_1;
     wire [31:0] instruction;
     wire [31:0] branch_base_addr;
     wire [31:0] link_addr;
     Ifetc32 ifetc32(
-    .clock(clk),
+    .clock(clk_out1),
     .reset(rst),
     .Zero(zero),
     .Jr(jr),
@@ -97,7 +103,7 @@ module CPU(input clk,
     
     wire [31:0] r_wdata;
     Decode32 decode32(
-    .clock(clk),
+    .clock(clk_out1),
     .reset(rst),
     .RegWrite(regwrite),
     .RegDst(regdst),
@@ -133,7 +139,7 @@ module CPU(input clk,
     
     wire [31:0] m_wdata;
     Dmemory32 dmemory32(
-    .clock(clk),
+    .clock(clk_out1),
     .memWrite(memwrite),
     .address(addr_out),
     .writeData(m_wdata),
