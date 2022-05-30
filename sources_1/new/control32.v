@@ -41,8 +41,8 @@ module Control32(Opcode,
     output Sftmd;
     output [1:0]ALUOp;
     input [21:0] ALUResultHigh; // From the execution unit Alu_Result[31..10]
-    wire Lw;
-    wire Sw;
+    wire lw;
+    wire sw;
     assign R_type       = (Opcode == 6'b000000)? 1'b1:1'b0;
     assign RegDST       = R_type;
     assign I_format     = (Opcode[5:3] == 3'b001)?1'b1:1'b0;
