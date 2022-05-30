@@ -42,5 +42,5 @@ module Dmemory32(input clock,
     .dina (kickOff ? writeData : upg_dat_i),
     .douta (readData)
     );
-    
+
 endmodule

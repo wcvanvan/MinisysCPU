@@ -50,8 +50,8 @@ module CPU(input clk,
     wire [31:0] branch_base_addr;
     wire [31:0] link_addr;
     wire [13:0] rom_addr_o;
-
-      // UART Programmer Pinouts
+    
+    // UART Programmer Pinouts
     wire upg_clk_o;
     wire upg_wen_o; //Uart write out enable
     wire upg_done_o; //Uart rx data have done
@@ -73,7 +73,13 @@ module CPU(input clk,
     uart_bmpg_0 uart (
     .upg_clk_i(clk_out2),
     .upg_rst_i(upg_rst),
-    .upg_rx_i(rx)
+    .upg_rx_i(rx),
+    .upg_clk_o(upg_clk_o),
+    .upg_wen_o(upg_wen_o),
+    .upg_adr_o(upg_adr_o),
+    .upg_dat_o(upg_dat_o),
+    .upg_done_o(upg_done_o),
+    .upg_tx_o(tx)
     );
     
     programrom pr(
@@ -82,7 +88,7 @@ module CPU(input clk,
     .upg_rst_i(upg_rst),
     .upg_clk_i(upg_clk_o),
     .upg_wen_i(upg_wen_o),
-    .upg_adr_i(upg_adr_o),
+    .upg_adr_i(upg_adr_o[13:0]),
     .upg_dat_i(upg_dat_o),
     .upg_done_i(upg_done_o)
     );
@@ -104,7 +110,7 @@ module CPU(input clk,
     .nBranch(nbranch),
     .rom_addr_o(rom_addr_o)
     );
-
+    
     wire [5:0] opcode = instruction[31:26];
     wire [5:0] funct  = instruction[5:0];
     wire regdst;
@@ -192,7 +198,7 @@ module CPU(input clk,
     .upg_rst_i(upg_rst),
     .upg_clk_i(upg_clk_o),
     .upg_wen_i(upg_wen_o),
-    .upg_adr_i(upg_adr_o),
+    .upg_adr_i(upg_adr_o[13:0]),
     .upg_dat_i(upg_dat_o),
     .upg_done_i(upg_done_o)
     );
