@@ -27,6 +27,7 @@ module Dmemory32(
     input [31:0] writeData,
     output [31:0] readData
     );
+    wire clk = ~clock;
     RAM ram(
         .clka(clk),
         .wea(memWrite),
@@ -34,5 +35,4 @@ module Dmemory32(
         .dina(writeData),
         .douta(readData)
         );
-    assign clk = !clock;
 endmodule

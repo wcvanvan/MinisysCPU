@@ -29,7 +29,7 @@ module cpu_tb(
     wire [23:0] w = 24'b0;
     always #10 clk = ~clk;
     initial begin
-        #50 rst = 1'b0;
+        #1000 rst = 1'b0;
     end
     CPU cpu(
         .clk(clk),
