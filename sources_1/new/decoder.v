@@ -90,7 +90,7 @@ module Decode32(
     wire [4:0] writeDst = (RegDst == 1'b1) ? rd : rt;
     wire [31:0] writeData = (MemOrIOToReg == 1'b1) ? mem_or_io_data : ALU_result;
     wire [31:0] writeAddrorData = (Jal == 1'b1) ? opcplus4 : writeData;
-    wire [4:0] writeOrJal = (Jal == 1'b1) ? 5'b01111 : writeDst;
+    wire [4:0] writeOrJal = (Jal == 1'b1) ? 31 : writeDst;
     regfiles registers(
         .clock(clock),
         .reset(reset),
