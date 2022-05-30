@@ -81,6 +81,8 @@ module CPU(input clk,
     .upg_done_o(upg_done_o),
     .upg_tx_o(tx)
     );
+
+    wire Instruction_o;
     
     programrom pr(
     .rom_clk_i(clk_out1),
@@ -90,9 +92,10 @@ module CPU(input clk,
     .upg_wen_i(upg_wen_o),
     .upg_adr_i(upg_adr_o[13:0]),
     .upg_dat_i(upg_dat_o),
-    .upg_done_i(upg_done_o)
+    .upg_done_i(upg_done_o),
+    .Instruction_o(Instruction_o)
     );
-    
+
     
     Ifetc32 ifetc32(
     .clock(clk_out1),
@@ -104,6 +107,7 @@ module CPU(input clk,
     .Read_data_1(read_data_1),
     .Addr_result(addr_in),
     .Instruction(instruction),
+    .Instruction_i(Instruction_o),
     .branch_base_addr(pcplus4),
     .link_addr(link_addr),
     .Branch(branch),
