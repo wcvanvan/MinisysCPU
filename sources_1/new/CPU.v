@@ -26,7 +26,7 @@ module CPU(input clk,
            output [23:0] io_wdata);
     
     wire clk_out1, clk_out2;
-    cpuclk cpuclk(
+    cpuclk cpuclk0(
     .clk_in1(clk),
     .clk_out1(clk_out1),
     .clk_out2(clk_out2)
@@ -53,7 +53,7 @@ module CPU(input clk,
     .Jal(jal),
     .Jmp(jmp),
     .Read_data_1(read_data_1),
-    .Addr_result(addr_result),
+    .Addr_result(addr_in),
     .Instruction(instruction),
     .branch_base_addr(pcplus4),
     .link_addr(link_addr),
@@ -138,20 +138,13 @@ module CPU(input clk,
     );
     
     wire [31:0] m_wdata;
+    wire [31:0] m_rdata;
     Dmemory32 dmemory32(
     .clock(clk_out1),
     .memWrite(memwrite),
     .address(addr_out),
     .writeData(m_wdata),
     .readData(m_rdata)
-    );
-    
-    wire [31:0] sign_extend_shift_left = sign_extend << 2;
-    Adder32 jmp_adder(
-    .a(pcplus4),
-    .b(sign_extend_shift_left),
-    .sum(addr_result),
-    .carry_out()
     );
     
     MemOrIO mem_or_io(
