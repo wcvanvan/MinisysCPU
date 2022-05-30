@@ -30,8 +30,7 @@ module MemOrIO(mRead,
                io_rdata,
                r_wdata,
                r_rdata,
-               data_to_dmem,
-               data_to_io);
+               data_to_dmem_or_io);
     
     input mRead; // read memory, from Controller
     input mWrite; // write memory, from Controller
@@ -43,24 +42,18 @@ module MemOrIO(mRead,
     input[23:0] io_rdata; // data read from IO,16 bits
     output [31:0] r_wdata; // data to register
     input[31:0] r_rdata; // data read from register
-    output reg[31:0] data_to_dmem; // sw data to dmem
-    output reg[23:0] data_to_io; // sw data to io
+    output reg [31:0] data_to_dmem_or_io;
     
     assign addr_out = addr_in;
-    // The data write to register may be from memory or io.
+    // The rite to register may be from memory or io.
     // While the data is from io, it should be the lower 16bit of r_wdata.
     assign r_wdata = (mRead == 1'b1) ? m_rdata : {8'b0, io_rdata};
     // Chip select signal of Led and Switch are all active high;
+    
     always @* begin
-        if (mWrite) begin
-            data_to_dmem = r_rdata;
-        end
-        else if (ioWrite) begin
-            data_to_io = r_rdata[23:0];
-        end
-        else begin
-            data_to_dmem = 32'hZZZZZZZZ;
-            data_to_io   = 24'b0;
-        end
+        if ((mWrite == 1)||(ioWrite == 1))
+            data_to_dmem_or_io = r_rdata;
+        else
+            data_to_dmem_or_io = 32'hZZZZZZZZ;
     end
 endmodule

@@ -147,6 +147,8 @@ module CPU(input clk,
     .readData(m_rdata)
     );
     
+    reg [23:0] data_to_dmem_or_io;
+    
     MemOrIO mem_or_io(
     .mRead(memread),
     .mWrite(memwrite),
@@ -158,6 +160,9 @@ module CPU(input clk,
     .io_rdata(io_rdata),
     .r_wdata(r_wdata),
     .r_rdata(mem_or_io_data),
-    .data_to_dmem(m_wdata),
-    .data_to_io(io_wdata));
+    .data_to_dmem_or_io(data_to_dmem_or_io));
+    
+    assign io_wdata = data_to_dmem_or_io;
+    assign m_wdata  = data_to_dmem_or_io;
+    
 endmodule
