@@ -45,7 +45,6 @@ module MemOrIO(mRead,
     input[31:0] r_rdata; // data read from register
     output reg[31:0] data_to_dmem; // sw data to dmem
     output reg[23:0] data_to_io; // sw data to io
-    
     assign addr_out = addr_in;
     // The data write to register may be from memory or io.
     // While the data is from io, it should be the lower 16bit of r_wdata.

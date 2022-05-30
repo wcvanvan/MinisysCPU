@@ -80,7 +80,7 @@ module CPU(input clk,
     wire [31:0] sign_extend;
     
     Control32 control32(
-    .ALUResultHigh(addr_in[31:10]),
+    .ALUResultHigh(alu_result[31:10]),
     .Opcode(opcode),
     .Function_opcode(funct),
     .RegDST(regdst),
