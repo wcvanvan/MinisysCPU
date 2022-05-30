@@ -111,7 +111,7 @@ module CPU(input clk,
     .Jal(jal),
     .mem_or_io_data(r_wdata),
     .ALU_result(alu_result),
-    .opcplus4(pcplus4),
+    .opcplus4(link_addr),
     .Instruction(instruction),
     .read_data_1(read_data_1),
     .read_data_2(mem_or_io_data),
@@ -136,18 +136,17 @@ module CPU(input clk,
     .ALU_Result(alu_result),
     .Addr_Result(addr_in)
     );
+
+    wire [31:0] data_to_dmem_or_io;
     
-    wire [31:0] m_wdata;
     wire [31:0] m_rdata;
     Dmemory32 dmemory32(
     .clock(clk_out1),
     .memWrite(memwrite),
     .address(addr_out),
-    .writeData(m_wdata),
+    .writeData(data_to_dmem_or_io),
     .readData(m_rdata)
     );
-    
-    reg [23:0] data_to_dmem_or_io;
     
     MemOrIO mem_or_io(
     .mRead(memread),
@@ -161,8 +160,7 @@ module CPU(input clk,
     .r_wdata(r_wdata),
     .r_rdata(mem_or_io_data),
     .data_to_dmem_or_io(data_to_dmem_or_io));
-    
-    assign io_wdata = data_to_dmem_or_io;
-    assign m_wdata  = data_to_dmem_or_io;
+
+    assign io_wdata = data_to_dmem_or_io[23:0];
     
 endmodule
