@@ -33,7 +33,7 @@ module CPU(input clk,
     );
     
     wire [31:0] pcplus4;
-    wire [31:0] addr_in;
+    wire [31:0] addr_in; // alu calculated current address + imm
     wire [31:0] addr_out;
     wire zero;
     wire jr;
