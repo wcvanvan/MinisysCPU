@@ -25,12 +25,16 @@ module cpu_tb(
     );
     reg clk = 1'b0;
     reg rst = 1'b1;
+    reg [23:0] r = 24'b0;
+    wire [23:0] w = 24'b0;
     always #10 clk = ~clk;
     initial begin
         #50 rst = 1'b0;
-    end;
+    end
     CPU cpu(
         .clk(clk),
-        .rst(rst)
+        .rst(rst),
+        .io_rdata(r),
+        .io_wdata(w)
     );
 endmodule
