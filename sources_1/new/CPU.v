@@ -29,7 +29,7 @@ module CPU(input clk,
            output tx);             // send data by uart
     
     wire clk_out1, clk_out2;
-    cpuclk cpuclk(
+    cpuclk cpuclk0(
     .clk_in1(clk),
     .clk_out1(clk_out1), // for cpu use
     .clk_out2(clk_out2) // for uart device use
@@ -37,7 +37,7 @@ module CPU(input clk,
     
     wire rst;
     wire [31:0] pcplus4;
-    wire [31:0] addr_in;
+    wire [31:0] addr_in; // alu calculated current address + imm
     wire [31:0] addr_out;
     wire zero;
     wire jr;
@@ -102,7 +102,7 @@ module CPU(input clk,
     .Jal(jal),
     .Jmp(jmp),
     .Read_data_1(read_data_1),
-    .Addr_result(addr_result),
+    .Addr_result(addr_in),
     .Instruction(instruction),
     .branch_base_addr(pcplus4),
     .link_addr(link_addr),
@@ -131,7 +131,7 @@ module CPU(input clk,
     wire [31:0] sign_extend;
     
     Control32 control32(
-    .ALUResultHigh(addr_in[31:10]),
+    .ALUResultHigh(alu_result[31:10]),
     .Opcode(opcode),
     .Function_opcode(funct),
     .RegDST(regdst),
@@ -162,7 +162,7 @@ module CPU(input clk,
     .Jal(jal),
     .mem_or_io_data(r_wdata),
     .ALU_result(alu_result),
-    .opcplus4(pcplus4),
+    .opcplus4(link_addr),
     .Instruction(instruction),
     .read_data_1(read_data_1),
     .read_data_2(mem_or_io_data),
@@ -203,20 +203,12 @@ module CPU(input clk,
     .upg_done_i(upg_done_o)
     );
     
-    wire [31:0] sign_extend_shift_left = sign_extend << 2;
-    Adder32 jmp_adder(
-    .a(pcplus4),
-    .b(sign_extend_shift_left),
-    .sum(addr_result),
-    .carry_out()
-    );
-    
     MemOrIO mem_or_io(
     .mRead(memread),
     .mWrite(memwrite),
     .ioRead(ioread),
     .ioWrite(iowrite),
-    .addr_in(addr_in),
+    .addr_in(alu_result),
     .addr_out(addr_out),
     .m_rdata(m_rdata),
     .io_rdata(io_rdata),

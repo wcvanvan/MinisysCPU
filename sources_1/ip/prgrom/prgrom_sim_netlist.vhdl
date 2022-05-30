@@ -1,7 +1,7 @@
 -- Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2017.4 (win64) Build 2086221 Fri Dec 15 20:55:39 MST 2017
--- Date        : Sun May 29 17:23:43 2022
+-- Date        : Mon May 30 23:20:42 2022
 -- Host        : DESKTOP-V9NBHV8 running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode funcsim
 --               D:/Projects/cpu/sccpuv0.1.0/sccpu.srcs/sources_1/ip/prgrom/prgrom_sim_netlist.vhdl
@@ -52,7 +52,6 @@ entity prgrom_blk_mem_gen_mux is
   port (
     douta : out STD_LOGIC_VECTOR ( 26 downto 0 );
     addra : in STD_LOGIC_VECTOR ( 1 downto 0 );
-    wea : in STD_LOGIC_VECTOR ( 0 to 0 );
     clka : in STD_LOGIC;
     DOPADOP : in STD_LOGIC_VECTOR ( 0 to 0 );
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram\ : in STD_LOGIC_VECTOR ( 0 to 0 );
@@ -84,13 +83,8 @@ entity prgrom_blk_mem_gen_mux is
 end prgrom_blk_mem_gen_mux;
 
 architecture STRUCTURE of prgrom_blk_mem_gen_mux is
-  signal \no_softecc_sel_reg.ce_pri.sel_pipe[0]_i_1_n_0\ : STD_LOGIC;
-  signal \no_softecc_sel_reg.ce_pri.sel_pipe[1]_i_1_n_0\ : STD_LOGIC;
   signal sel_pipe : STD_LOGIC_VECTOR ( 1 downto 0 );
   signal sel_pipe_d1 : STD_LOGIC_VECTOR ( 1 downto 0 );
-  attribute SOFT_HLUTNM : string;
-  attribute SOFT_HLUTNM of \no_softecc_sel_reg.ce_pri.sel_pipe[0]_i_1\ : label is "soft_lutpair0";
-  attribute SOFT_HLUTNM of \no_softecc_sel_reg.ce_pri.sel_pipe[1]_i_1\ : label is "soft_lutpair0";
 begin
 \douta[10]_INST_0\: unisim.vcomponents.LUT6
     generic map(
@@ -465,26 +459,6 @@ begin
       Q => sel_pipe_d1(1),
       R => '0'
     );
-\no_softecc_sel_reg.ce_pri.sel_pipe[0]_i_1\: unisim.vcomponents.LUT3
-    generic map(
-      INIT => X"E2"
-    )
-        port map (
-      I0 => addra(0),
-      I1 => wea(0),
-      I2 => sel_pipe(0),
-      O => \no_softecc_sel_reg.ce_pri.sel_pipe[0]_i_1_n_0\
-    );
-\no_softecc_sel_reg.ce_pri.sel_pipe[1]_i_1\: unisim.vcomponents.LUT3
-    generic map(
-      INIT => X"E2"
-    )
-        port map (
-      I0 => addra(1),
-      I1 => wea(0),
-      I2 => sel_pipe(1),
-      O => \no_softecc_sel_reg.ce_pri.sel_pipe[1]_i_1_n_0\
-    );
 \no_softecc_sel_reg.ce_pri.sel_pipe_reg[0]\: unisim.vcomponents.FDRE
     generic map(
       INIT => '0'
@@ -492,7 +466,7 @@ begin
         port map (
       C => clka,
       CE => '1',
-      D => \no_softecc_sel_reg.ce_pri.sel_pipe[0]_i_1_n_0\,
+      D => addra(0),
       Q => sel_pipe(0),
       R => '0'
     );
@@ -503,7 +477,7 @@ begin
         port map (
       C => clka,
       CE => '1',
-      D => \no_softecc_sel_reg.ce_pri.sel_pipe[1]_i_1_n_0\,
+      D => addra(1),
       Q => sel_pipe(1),
       R => '0'
     );
@@ -629,8 +603,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"00000",
       SRVAL_B => X"00000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "WRITE_FIRST",
+      WRITE_MODE_B => "WRITE_FIRST",
       WRITE_WIDTH_A => 1,
       WRITE_WIDTH_B => 1
     )
@@ -865,8 +839,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "WRITE_FIRST",
+      WRITE_MODE_B => "WRITE_FIRST",
       WRITE_WIDTH_A => 2,
       WRITE_WIDTH_B => 2
     )
@@ -1115,8 +1089,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "WRITE_FIRST",
+      WRITE_MODE_B => "WRITE_FIRST",
       WRITE_WIDTH_A => 2,
       WRITE_WIDTH_B => 2
     )
@@ -1367,8 +1341,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "WRITE_FIRST",
+      WRITE_MODE_B => "WRITE_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -1621,8 +1595,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "WRITE_FIRST",
+      WRITE_MODE_B => "WRITE_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -1875,8 +1849,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "WRITE_FIRST",
+      WRITE_MODE_B => "WRITE_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -2129,8 +2103,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "WRITE_FIRST",
+      WRITE_MODE_B => "WRITE_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -2383,8 +2357,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "WRITE_FIRST",
+      WRITE_MODE_B => "WRITE_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -2639,8 +2613,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "WRITE_FIRST",
+      WRITE_MODE_B => "WRITE_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -2904,8 +2878,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "WRITE_FIRST",
+      WRITE_MODE_B => "WRITE_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -3167,8 +3141,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "WRITE_FIRST",
+      WRITE_MODE_B => "WRITE_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -3421,8 +3395,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "WRITE_FIRST",
+      WRITE_MODE_B => "WRITE_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -3675,8 +3649,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "WRITE_FIRST",
+      WRITE_MODE_B => "WRITE_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -3929,8 +3903,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "WRITE_FIRST",
+      WRITE_MODE_B => "WRITE_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -4183,8 +4157,8 @@ begin
       SIM_DEVICE => "7SERIES",
       SRVAL_A => X"000000000",
       SRVAL_B => X"000000000",
-      WRITE_MODE_A => "NO_CHANGE",
-      WRITE_MODE_B => "NO_CHANGE",
+      WRITE_MODE_A => "WRITE_FIRST",
+      WRITE_MODE_B => "WRITE_FIRST",
       WRITE_WIDTH_A => 9,
       WRITE_WIDTH_B => 9
     )
@@ -4932,8 +4906,7 @@ begin
       DOPADOP(0) => \ramloop[13].ram.r_n_8\,
       addra(1 downto 0) => addra(13 downto 12),
       clka => clka,
-      douta(26 downto 0) => douta(31 downto 5),
-      wea(0) => wea(0)
+      douta(26 downto 0) => douta(31 downto 5)
     );
 \ramloop[0].ram.r\: entity work.prgrom_blk_mem_gen_prim_width
      port map (
@@ -5335,7 +5308,7 @@ entity prgrom_blk_mem_gen_v8_4_1 is
   attribute C_EN_SLEEP_PIN : integer;
   attribute C_EN_SLEEP_PIN of prgrom_blk_mem_gen_v8_4_1 : entity is 0;
   attribute C_EST_POWER_SUMMARY : string;
-  attribute C_EST_POWER_SUMMARY of prgrom_blk_mem_gen_v8_4_1 : entity is "Estimated Power for IP     :     12.011501 mW";
+  attribute C_EST_POWER_SUMMARY of prgrom_blk_mem_gen_v8_4_1 : entity is "Estimated Power for IP     :     13.776802 mW";
   attribute C_FAMILY : string;
   attribute C_FAMILY of prgrom_blk_mem_gen_v8_4_1 : entity is "artix7";
   attribute C_HAS_AXI_ID : integer;
@@ -5425,7 +5398,7 @@ entity prgrom_blk_mem_gen_v8_4_1 is
   attribute C_WRITE_DEPTH_B : integer;
   attribute C_WRITE_DEPTH_B of prgrom_blk_mem_gen_v8_4_1 : entity is 16384;
   attribute C_WRITE_MODE_A : string;
-  attribute C_WRITE_MODE_A of prgrom_blk_mem_gen_v8_4_1 : entity is "NO_CHANGE";
+  attribute C_WRITE_MODE_A of prgrom_blk_mem_gen_v8_4_1 : entity is "WRITE_FIRST";
   attribute C_WRITE_MODE_B : string;
   attribute C_WRITE_MODE_B of prgrom_blk_mem_gen_v8_4_1 : entity is "WRITE_FIRST";
   attribute C_WRITE_WIDTH_A : integer;
@@ -5662,7 +5635,7 @@ architecture STRUCTURE of prgrom is
   attribute C_EN_SLEEP_PIN : integer;
   attribute C_EN_SLEEP_PIN of U0 : label is 0;
   attribute C_EST_POWER_SUMMARY : string;
-  attribute C_EST_POWER_SUMMARY of U0 : label is "Estimated Power for IP     :     12.011501 mW";
+  attribute C_EST_POWER_SUMMARY of U0 : label is "Estimated Power for IP     :     13.776802 mW";
   attribute C_FAMILY : string;
   attribute C_FAMILY of U0 : label is "artix7";
   attribute C_HAS_AXI_ID : integer;
@@ -5752,7 +5725,7 @@ architecture STRUCTURE of prgrom is
   attribute C_WRITE_DEPTH_B : integer;
   attribute C_WRITE_DEPTH_B of U0 : label is 16384;
   attribute C_WRITE_MODE_A : string;
-  attribute C_WRITE_MODE_A of U0 : label is "NO_CHANGE";
+  attribute C_WRITE_MODE_A of U0 : label is "WRITE_FIRST";
   attribute C_WRITE_MODE_B : string;
   attribute C_WRITE_MODE_B of U0 : label is "WRITE_FIRST";
   attribute C_WRITE_WIDTH_A : integer;

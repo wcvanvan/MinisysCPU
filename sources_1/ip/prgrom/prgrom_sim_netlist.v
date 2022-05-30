@@ -1,7 +1,7 @@
 // Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2017.4 (win64) Build 2086221 Fri Dec 15 20:55:39 MST 2017
-// Date        : Sun May 29 17:23:43 2022
+// Date        : Mon May 30 23:20:42 2022
 // Host        : DESKTOP-V9NBHV8 running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
 //               D:/Projects/cpu/sccpuv0.1.0/sccpu.srcs/sources_1/ip/prgrom/prgrom_sim_netlist.v
@@ -75,7 +75,7 @@ module prgrom
   (* C_EN_SAFETY_CKT = "0" *) 
   (* C_EN_SHUTDOWN_PIN = "0" *) 
   (* C_EN_SLEEP_PIN = "0" *) 
-  (* C_EST_POWER_SUMMARY = "Estimated Power for IP     :     12.011501 mW" *) 
+  (* C_EST_POWER_SUMMARY = "Estimated Power for IP     :     13.776802 mW" *) 
   (* C_FAMILY = "artix7" *) 
   (* C_HAS_AXI_ID = "0" *) 
   (* C_HAS_ENA = "0" *) 
@@ -120,7 +120,7 @@ module prgrom
   (* C_WEB_WIDTH = "1" *) 
   (* C_WRITE_DEPTH_A = "16384" *) 
   (* C_WRITE_DEPTH_B = "16384" *) 
-  (* C_WRITE_MODE_A = "NO_CHANGE" *) 
+  (* C_WRITE_MODE_A = "WRITE_FIRST" *) 
   (* C_WRITE_MODE_B = "WRITE_FIRST" *) 
   (* C_WRITE_WIDTH_A = "32" *) 
   (* C_WRITE_WIDTH_B = "32" *) 
@@ -376,8 +376,7 @@ module prgrom_blk_mem_gen_generic_cstr
         .DOPADOP(\ramloop[13].ram.r_n_8 ),
         .addra(addra[13:12]),
         .clka(clka),
-        .douta(douta[31:5]),
-        .wea(wea));
+        .douta(douta[31:5]));
   prgrom_blk_mem_gen_prim_width \ramloop[0].ram.r 
        (.addra(addra),
         .clka(clka),
@@ -498,7 +497,6 @@ endmodule
 module prgrom_blk_mem_gen_mux
    (douta,
     addra,
-    wea,
     clka,
     DOPADOP,
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram ,
@@ -526,7 +524,6 @@ module prgrom_blk_mem_gen_mux
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram_20 );
   output [26:0]douta;
   input [1:0]addra;
-  input [0:0]wea;
   input clka;
   input [0:0]DOPADOP;
   input [0:0]\DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram ;
@@ -580,11 +577,8 @@ module prgrom_blk_mem_gen_mux
   wire [1:0]addra;
   wire clka;
   wire [26:0]douta;
-  wire \no_softecc_sel_reg.ce_pri.sel_pipe[0]_i_1_n_0 ;
-  wire \no_softecc_sel_reg.ce_pri.sel_pipe[1]_i_1_n_0 ;
   wire [1:0]sel_pipe;
   wire [1:0]sel_pipe_d1;
-  wire [0:0]wea;
 
   LUT6 #(
     .INIT(64'hCCFFAAF0CC00AAF0)) 
@@ -872,28 +866,12 @@ module prgrom_blk_mem_gen_mux
         .D(sel_pipe[1]),
         .Q(sel_pipe_d1[1]),
         .R(1'b0));
-  (* SOFT_HLUTNM = "soft_lutpair0" *) 
-  LUT3 #(
-    .INIT(8'hE2)) 
-    \no_softecc_sel_reg.ce_pri.sel_pipe[0]_i_1 
-       (.I0(addra[0]),
-        .I1(wea),
-        .I2(sel_pipe[0]),
-        .O(\no_softecc_sel_reg.ce_pri.sel_pipe[0]_i_1_n_0 ));
-  (* SOFT_HLUTNM = "soft_lutpair0" *) 
-  LUT3 #(
-    .INIT(8'hE2)) 
-    \no_softecc_sel_reg.ce_pri.sel_pipe[1]_i_1 
-       (.I0(addra[1]),
-        .I1(wea),
-        .I2(sel_pipe[1]),
-        .O(\no_softecc_sel_reg.ce_pri.sel_pipe[1]_i_1_n_0 ));
   FDRE #(
     .INIT(1'b0)) 
     \no_softecc_sel_reg.ce_pri.sel_pipe_reg[0] 
        (.C(clka),
         .CE(1'b1),
-        .D(\no_softecc_sel_reg.ce_pri.sel_pipe[0]_i_1_n_0 ),
+        .D(addra[0]),
         .Q(sel_pipe[0]),
         .R(1'b0));
   FDRE #(
@@ -901,7 +879,7 @@ module prgrom_blk_mem_gen_mux
     \no_softecc_sel_reg.ce_pri.sel_pipe_reg[1] 
        (.C(clka),
         .CE(1'b1),
-        .D(\no_softecc_sel_reg.ce_pri.sel_pipe[1]_i_1_n_0 ),
+        .D(addra[1]),
         .Q(sel_pipe[1]),
         .R(1'b0));
 endmodule
@@ -1527,8 +1505,8 @@ module prgrom_blk_mem_gen_prim_wrapper_init
     .SIM_DEVICE("7SERIES"),
     .SRVAL_A(18'h00000),
     .SRVAL_B(18'h00000),
-    .WRITE_MODE_A("NO_CHANGE"),
-    .WRITE_MODE_B("NO_CHANGE"),
+    .WRITE_MODE_A("WRITE_FIRST"),
+    .WRITE_MODE_B("WRITE_FIRST"),
     .WRITE_WIDTH_A(1),
     .WRITE_WIDTH_B(1)) 
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM18.ram 
@@ -1758,8 +1736,8 @@ module prgrom_blk_mem_gen_prim_wrapper_init__parameterized0
     .SIM_DEVICE("7SERIES"),
     .SRVAL_A(36'h000000000),
     .SRVAL_B(36'h000000000),
-    .WRITE_MODE_A("NO_CHANGE"),
-    .WRITE_MODE_B("NO_CHANGE"),
+    .WRITE_MODE_A("WRITE_FIRST"),
+    .WRITE_MODE_B("WRITE_FIRST"),
     .WRITE_WIDTH_A(2),
     .WRITE_WIDTH_B(2)) 
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram 
@@ -1999,8 +1977,8 @@ module prgrom_blk_mem_gen_prim_wrapper_init__parameterized1
     .SIM_DEVICE("7SERIES"),
     .SRVAL_A(36'h000000000),
     .SRVAL_B(36'h000000000),
-    .WRITE_MODE_A("NO_CHANGE"),
-    .WRITE_MODE_B("NO_CHANGE"),
+    .WRITE_MODE_A("WRITE_FIRST"),
+    .WRITE_MODE_B("WRITE_FIRST"),
     .WRITE_WIDTH_A(2),
     .WRITE_WIDTH_B(2)) 
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram 
@@ -2246,8 +2224,8 @@ module prgrom_blk_mem_gen_prim_wrapper_init__parameterized10
     .SIM_DEVICE("7SERIES"),
     .SRVAL_A(36'h000000000),
     .SRVAL_B(36'h000000000),
-    .WRITE_MODE_A("NO_CHANGE"),
-    .WRITE_MODE_B("NO_CHANGE"),
+    .WRITE_MODE_A("WRITE_FIRST"),
+    .WRITE_MODE_B("WRITE_FIRST"),
     .WRITE_WIDTH_A(9),
     .WRITE_WIDTH_B(9)) 
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram 
@@ -2493,8 +2471,8 @@ module prgrom_blk_mem_gen_prim_wrapper_init__parameterized11
     .SIM_DEVICE("7SERIES"),
     .SRVAL_A(36'h000000000),
     .SRVAL_B(36'h000000000),
-    .WRITE_MODE_A("NO_CHANGE"),
-    .WRITE_MODE_B("NO_CHANGE"),
+    .WRITE_MODE_A("WRITE_FIRST"),
+    .WRITE_MODE_B("WRITE_FIRST"),
     .WRITE_WIDTH_A(9),
     .WRITE_WIDTH_B(9)) 
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram 
@@ -2740,8 +2718,8 @@ module prgrom_blk_mem_gen_prim_wrapper_init__parameterized12
     .SIM_DEVICE("7SERIES"),
     .SRVAL_A(36'h000000000),
     .SRVAL_B(36'h000000000),
-    .WRITE_MODE_A("NO_CHANGE"),
-    .WRITE_MODE_B("NO_CHANGE"),
+    .WRITE_MODE_A("WRITE_FIRST"),
+    .WRITE_MODE_B("WRITE_FIRST"),
     .WRITE_WIDTH_A(9),
     .WRITE_WIDTH_B(9)) 
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram 
@@ -2987,8 +2965,8 @@ module prgrom_blk_mem_gen_prim_wrapper_init__parameterized13
     .SIM_DEVICE("7SERIES"),
     .SRVAL_A(36'h000000000),
     .SRVAL_B(36'h000000000),
-    .WRITE_MODE_A("NO_CHANGE"),
-    .WRITE_MODE_B("NO_CHANGE"),
+    .WRITE_MODE_A("WRITE_FIRST"),
+    .WRITE_MODE_B("WRITE_FIRST"),
     .WRITE_WIDTH_A(9),
     .WRITE_WIDTH_B(9)) 
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram 
@@ -3234,8 +3212,8 @@ module prgrom_blk_mem_gen_prim_wrapper_init__parameterized2
     .SIM_DEVICE("7SERIES"),
     .SRVAL_A(36'h000000000),
     .SRVAL_B(36'h000000000),
-    .WRITE_MODE_A("NO_CHANGE"),
-    .WRITE_MODE_B("NO_CHANGE"),
+    .WRITE_MODE_A("WRITE_FIRST"),
+    .WRITE_MODE_B("WRITE_FIRST"),
     .WRITE_WIDTH_A(9),
     .WRITE_WIDTH_B(9)) 
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram 
@@ -3481,8 +3459,8 @@ module prgrom_blk_mem_gen_prim_wrapper_init__parameterized3
     .SIM_DEVICE("7SERIES"),
     .SRVAL_A(36'h000000000),
     .SRVAL_B(36'h000000000),
-    .WRITE_MODE_A("NO_CHANGE"),
-    .WRITE_MODE_B("NO_CHANGE"),
+    .WRITE_MODE_A("WRITE_FIRST"),
+    .WRITE_MODE_B("WRITE_FIRST"),
     .WRITE_WIDTH_A(9),
     .WRITE_WIDTH_B(9)) 
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram 
@@ -3734,8 +3712,8 @@ module prgrom_blk_mem_gen_prim_wrapper_init__parameterized4
     .SIM_DEVICE("7SERIES"),
     .SRVAL_A(36'h000000000),
     .SRVAL_B(36'h000000000),
-    .WRITE_MODE_A("NO_CHANGE"),
-    .WRITE_MODE_B("NO_CHANGE"),
+    .WRITE_MODE_A("WRITE_FIRST"),
+    .WRITE_MODE_B("WRITE_FIRST"),
     .WRITE_WIDTH_A(9),
     .WRITE_WIDTH_B(9)) 
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram 
@@ -3987,8 +3965,8 @@ module prgrom_blk_mem_gen_prim_wrapper_init__parameterized5
     .SIM_DEVICE("7SERIES"),
     .SRVAL_A(36'h000000000),
     .SRVAL_B(36'h000000000),
-    .WRITE_MODE_A("NO_CHANGE"),
-    .WRITE_MODE_B("NO_CHANGE"),
+    .WRITE_MODE_A("WRITE_FIRST"),
+    .WRITE_MODE_B("WRITE_FIRST"),
     .WRITE_WIDTH_A(9),
     .WRITE_WIDTH_B(9)) 
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram 
@@ -4234,8 +4212,8 @@ module prgrom_blk_mem_gen_prim_wrapper_init__parameterized6
     .SIM_DEVICE("7SERIES"),
     .SRVAL_A(36'h000000000),
     .SRVAL_B(36'h000000000),
-    .WRITE_MODE_A("NO_CHANGE"),
-    .WRITE_MODE_B("NO_CHANGE"),
+    .WRITE_MODE_A("WRITE_FIRST"),
+    .WRITE_MODE_B("WRITE_FIRST"),
     .WRITE_WIDTH_A(9),
     .WRITE_WIDTH_B(9)) 
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram 
@@ -4481,8 +4459,8 @@ module prgrom_blk_mem_gen_prim_wrapper_init__parameterized7
     .SIM_DEVICE("7SERIES"),
     .SRVAL_A(36'h000000000),
     .SRVAL_B(36'h000000000),
-    .WRITE_MODE_A("NO_CHANGE"),
-    .WRITE_MODE_B("NO_CHANGE"),
+    .WRITE_MODE_A("WRITE_FIRST"),
+    .WRITE_MODE_B("WRITE_FIRST"),
     .WRITE_WIDTH_A(9),
     .WRITE_WIDTH_B(9)) 
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram 
@@ -4728,8 +4706,8 @@ module prgrom_blk_mem_gen_prim_wrapper_init__parameterized8
     .SIM_DEVICE("7SERIES"),
     .SRVAL_A(36'h000000000),
     .SRVAL_B(36'h000000000),
-    .WRITE_MODE_A("NO_CHANGE"),
-    .WRITE_MODE_B("NO_CHANGE"),
+    .WRITE_MODE_A("WRITE_FIRST"),
+    .WRITE_MODE_B("WRITE_FIRST"),
     .WRITE_WIDTH_A(9),
     .WRITE_WIDTH_B(9)) 
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram 
@@ -4975,8 +4953,8 @@ module prgrom_blk_mem_gen_prim_wrapper_init__parameterized9
     .SIM_DEVICE("7SERIES"),
     .SRVAL_A(36'h000000000),
     .SRVAL_B(36'h000000000),
-    .WRITE_MODE_A("NO_CHANGE"),
-    .WRITE_MODE_B("NO_CHANGE"),
+    .WRITE_MODE_A("WRITE_FIRST"),
+    .WRITE_MODE_B("WRITE_FIRST"),
     .WRITE_WIDTH_A(9),
     .WRITE_WIDTH_B(9)) 
     \DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM36.ram 
@@ -5048,7 +5026,7 @@ endmodule
 (* C_DISABLE_WARN_BHV_COLL = "0" *) (* C_DISABLE_WARN_BHV_RANGE = "0" *) (* C_ELABORATION_DIR = "./" *) 
 (* C_ENABLE_32BIT_ADDRESS = "0" *) (* C_EN_DEEPSLEEP_PIN = "0" *) (* C_EN_ECC_PIPE = "0" *) 
 (* C_EN_RDADDRA_CHG = "0" *) (* C_EN_RDADDRB_CHG = "0" *) (* C_EN_SAFETY_CKT = "0" *) 
-(* C_EN_SHUTDOWN_PIN = "0" *) (* C_EN_SLEEP_PIN = "0" *) (* C_EST_POWER_SUMMARY = "Estimated Power for IP     :     12.011501 mW" *) 
+(* C_EN_SHUTDOWN_PIN = "0" *) (* C_EN_SLEEP_PIN = "0" *) (* C_EST_POWER_SUMMARY = "Estimated Power for IP     :     13.776802 mW" *) 
 (* C_FAMILY = "artix7" *) (* C_HAS_AXI_ID = "0" *) (* C_HAS_ENA = "0" *) 
 (* C_HAS_ENB = "0" *) (* C_HAS_INJECTERR = "0" *) (* C_HAS_MEM_OUTPUT_REGS_A = "1" *) 
 (* C_HAS_MEM_OUTPUT_REGS_B = "0" *) (* C_HAS_MUX_OUTPUT_REGS_A = "0" *) (* C_HAS_MUX_OUTPUT_REGS_B = "0" *) 
@@ -5063,7 +5041,7 @@ endmodule
 (* C_USE_BRAM_BLOCK = "0" *) (* C_USE_BYTE_WEA = "0" *) (* C_USE_BYTE_WEB = "0" *) 
 (* C_USE_DEFAULT_DATA = "0" *) (* C_USE_ECC = "0" *) (* C_USE_SOFTECC = "0" *) 
 (* C_USE_URAM = "0" *) (* C_WEA_WIDTH = "1" *) (* C_WEB_WIDTH = "1" *) 
-(* C_WRITE_DEPTH_A = "16384" *) (* C_WRITE_DEPTH_B = "16384" *) (* C_WRITE_MODE_A = "NO_CHANGE" *) 
+(* C_WRITE_DEPTH_A = "16384" *) (* C_WRITE_DEPTH_B = "16384" *) (* C_WRITE_MODE_A = "WRITE_FIRST" *) 
 (* C_WRITE_MODE_B = "WRITE_FIRST" *) (* C_WRITE_WIDTH_A = "32" *) (* C_WRITE_WIDTH_B = "32" *) 
 (* C_XDEVICEFAMILY = "artix7" *) (* ORIG_REF_NAME = "blk_mem_gen_v8_4_1" *) (* downgradeipidentifiedwarnings = "yes" *) 
 module prgrom_blk_mem_gen_v8_4_1
