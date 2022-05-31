@@ -24,14 +24,16 @@ module cpu_tb();
     reg clk        = 1'b0;
     reg rst        = 1'b1;
     always #10 clk = ~clk;
-    initial begin
-        #50 rst = 1'b0;
-    end
     reg[23:0] io_rdata;
-    reg[23:0] io_wdata;
+    wire[23:0] io_wdata;
     reg start_uart;
-    reg rx;
-    reg tx;
+    wire rx;
+    wire tx;
+    initial begin
+        #10000 rst = 1'b0;
+        #50 io_rdata = 32'b1111_1111_1111_1111_0000_0001;
+        #50 io_rdata = 32'b1111_1111_1111_1111_0000_1001;
+    end
     CPU cpu(
     .clk(clk),
     .fpga_rst(rst),
