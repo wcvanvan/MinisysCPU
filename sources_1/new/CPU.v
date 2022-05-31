@@ -82,7 +82,7 @@ module CPU(input clk,
     .upg_tx_o(tx)
     );
     
-    wire Instruction_o;
+    wire[31:0] Instruction_o;
     
     programrom pr(
     .rom_clk_i(clk_out1),
@@ -192,7 +192,7 @@ module CPU(input clk,
     .Addr_Result(addr_in)
     );
     
-    wire [31:0] m_wdata;
+    wire [31:0] m_rdata;
     wire [31:0] data_to_dmem_or_io;
     Dmemory32 dmemory32(
     .clock(clk_out1),
@@ -221,6 +221,7 @@ module CPU(input clk,
     .r_rdata(mem_or_io_data),
     .data_to_dmem_or_io(data_to_dmem_or_io)
     );
-    
+
+    assign io_wdata = data_to_dmem_or_io[23:0];
     
 endmodule

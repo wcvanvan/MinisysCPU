@@ -28,11 +28,10 @@ module Ifetc32(Instruction_i,
     input        Zero;                  //来自ALU，Zero�????1表示两个值相等，反之表示不相�????
     input        clock,reset;           //时钟与复�????,复位信号用于给PC赋初始�?�，复位信号高电平有�????
     output[31:0] link_addr;             // JAL指令专用的PC+4
-    output[13:0] rom_addr_o; // give the current pc to prgrom
+    output[13:0] rom_addr_o; // give the current pc to prgrom`
     reg [31:0]pc;
     reg [31:0]next_pc;
     reg [31:0]link_addr;
-    
     assign rom_addr_o = pc[15:2];
     
     assign Instruction = Instruction_i;

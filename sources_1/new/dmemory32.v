@@ -38,9 +38,9 @@ module Dmemory32(input clock,
     RAM ram (
     .clka (kickOff ? clk : upg_clk_i),
     .wea (kickOff ? memWrite : upg_wen_i),
-    .addra (kickOff ? address : upg_adr_i),
+    .addra (kickOff ? address[15:2] : upg_adr_i),
     .dina (kickOff ? writeData : upg_dat_i),
     .douta (readData)
     );
-
+    
 endmodule
