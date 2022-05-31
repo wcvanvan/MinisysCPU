@@ -3,8 +3,8 @@
 -- Tool Version: Vivado v.2017.4 (win64) Build 2086221 Fri Dec 15 20:55:39 MST 2017
 -- Date        : Mon May  9 17:13:49 2022
 -- Host        : Fengs-Laptop running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode funcsim
---               c:/Users/dazhi/sccpu/sccpu.srcs/sources_1/ip/uart_bmpg_0/uart_bmpg_0_sim_netlist.vhdl
+-- Command     : write_vhdl -force -mode funcsim -rename_top uart_bmpg_0 -prefix
+--               uart_bmpg_0_ uart_bmpg_0_sim_netlist.vhdl
 -- Design      : uart_bmpg_0
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -3903,8 +3903,6 @@ entity uart_bmpg_0_axi_uart is
   attribute CHECK_LICENSE_TYPE of uart_bmpg_0_axi_uart : entity is "axi_uart,axi_uartlite,{}";
   attribute DowngradeIPIdentifiedWarnings : string;
   attribute DowngradeIPIdentifiedWarnings of uart_bmpg_0_axi_uart : entity is "yes";
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of uart_bmpg_0_axi_uart : entity is "axi_uart";
   attribute X_CORE_INFO : string;
   attribute X_CORE_INFO of uart_bmpg_0_axi_uart : entity is "axi_uartlite,Vivado 2017.4";
 end uart_bmpg_0_axi_uart;
@@ -4001,8 +3999,6 @@ entity uart_bmpg_0_uart_bmpg is
   attribute JUDGE_WRDY of uart_bmpg_0_uart_bmpg : entity is 2;
   attribute MSG_LEN : integer;
   attribute MSG_LEN of uart_bmpg_0_uart_bmpg : entity is 38;
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of uart_bmpg_0_uart_bmpg : entity is "uart_bmpg";
   attribute RDATA : integer;
   attribute RDATA of uart_bmpg_0_uart_bmpg : entity is 3;
   attribute RDATA_VALID : integer;
@@ -10929,8 +10925,6 @@ entity uart_bmpg_0_upg is
     upg_rst_i : in STD_LOGIC;
     upg_rx_i : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of uart_bmpg_0_upg : entity is "upg";
 end uart_bmpg_0_upg;
 
 architecture STRUCTURE of uart_bmpg_0_upg is

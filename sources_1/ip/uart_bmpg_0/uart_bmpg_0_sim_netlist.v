@@ -3,8 +3,8 @@
 // Tool Version: Vivado v.2017.4 (win64) Build 2086221 Fri Dec 15 20:55:39 MST 2017
 // Date        : Mon May  9 17:13:49 2022
 // Host        : Fengs-Laptop running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode funcsim
-//               c:/Users/dazhi/sccpu/sccpu.srcs/sources_1/ip/uart_bmpg_0/uart_bmpg_0_sim_netlist.v
+// Command     : write_verilog -force -mode funcsim -rename_top uart_bmpg_0 -prefix
+//               uart_bmpg_0_ uart_bmpg_0_sim_netlist.v
 // Design      : uart_bmpg_0
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -12,52 +12,7 @@
 // --------------------------------------------------------------------------------
 `timescale 1 ps / 1 ps
 
-(* CHECK_LICENSE_TYPE = "uart_bmpg_0,upg,{}" *) (* DowngradeIPIdentifiedWarnings = "yes" *) (* X_CORE_INFO = "upg,Vivado 2017.4" *) 
-(* NotValidForBitStream *)
-module uart_bmpg_0
-   (upg_clk_i,
-    upg_rst_i,
-    upg_clk_o,
-    upg_wen_o,
-    upg_adr_o,
-    upg_dat_o,
-    upg_done_o,
-    upg_rx_i,
-    upg_tx_o);
-  input upg_clk_i;
-  input upg_rst_i;
-  output upg_clk_o;
-  output upg_wen_o;
-  output [14:0]upg_adr_o;
-  output [31:0]upg_dat_o;
-  output upg_done_o;
-  input upg_rx_i;
-  output upg_tx_o;
-
-  wire [14:0]upg_adr_o;
-  wire upg_clk_i;
-  wire upg_clk_o;
-  wire [31:0]upg_dat_o;
-  wire upg_done_o;
-  wire upg_rst_i;
-  wire upg_rx_i;
-  wire upg_tx_o;
-  wire upg_wen_o;
-
-  uart_bmpg_0_upg inst
-       (.upg_adr_o(upg_adr_o),
-        .upg_clk_i(upg_clk_i),
-        .upg_clk_o(upg_clk_o),
-        .upg_dat_o(upg_dat_o),
-        .upg_done_o(upg_done_o),
-        .upg_rst_i(upg_rst_i),
-        .upg_rx_i(upg_rx_i),
-        .upg_tx_o(upg_tx_o),
-        .upg_wen_o(upg_wen_o));
-endmodule
-
-(* CHECK_LICENSE_TYPE = "axi_uart,axi_uartlite,{}" *) (* DowngradeIPIdentifiedWarnings = "yes" *) (* ORIG_REF_NAME = "axi_uart" *) 
-(* X_CORE_INFO = "axi_uartlite,Vivado 2017.4" *) 
+(* CHECK_LICENSE_TYPE = "axi_uart,axi_uartlite,{}" *) (* DowngradeIPIdentifiedWarnings = "yes" *) (* X_CORE_INFO = "axi_uartlite,Vivado 2017.4" *) 
 module uart_bmpg_0_axi_uart
    (interrupt,
     rx,
@@ -3786,10 +3741,9 @@ endmodule
 
 (* ADDR_WIDTH = "15" *) (* BYTE_NUM = "4" *) (* DATA_WIDTH = "32" *) 
 (* JUDGE_RRDY = "2" *) (* JUDGE_WRDY = "2" *) (* MSG_LEN = "38" *) 
-(* ORIG_REF_NAME = "uart_bmpg" *) (* RDATA = "3" *) (* RDATA_VALID = "1" *) 
-(* RDELAY = "4" *) (* RIDLE = "0" *) (* WAIT_NUM = "765" *) 
-(* WDATA = "3" *) (* WDATA_VALID = "1" *) (* WDELAY = "4" *) 
-(* WIDLE = "0" *) 
+(* RDATA = "3" *) (* RDATA_VALID = "1" *) (* RDELAY = "4" *) 
+(* RIDLE = "0" *) (* WAIT_NUM = "765" *) (* WDATA = "3" *) 
+(* WDATA_VALID = "1" *) (* WDELAY = "4" *) (* WIDLE = "0" *) 
 module uart_bmpg_0_uart_bmpg
    (upg_clk_i,
     upg_clk_o,
@@ -8849,7 +8803,50 @@ module uart_bmpg_0_uart_bmpg
         .Q(wwait_cnt_reg_n_0_[9]));
 endmodule
 
-(* ORIG_REF_NAME = "upg" *) 
+(* CHECK_LICENSE_TYPE = "uart_bmpg_0,upg,{}" *) (* DowngradeIPIdentifiedWarnings = "yes" *) (* X_CORE_INFO = "upg,Vivado 2017.4" *) 
+(* NotValidForBitStream *)
+module uart_bmpg_0
+   (upg_clk_i,
+    upg_rst_i,
+    upg_clk_o,
+    upg_wen_o,
+    upg_adr_o,
+    upg_dat_o,
+    upg_done_o,
+    upg_rx_i,
+    upg_tx_o);
+  input upg_clk_i;
+  input upg_rst_i;
+  output upg_clk_o;
+  output upg_wen_o;
+  output [14:0]upg_adr_o;
+  output [31:0]upg_dat_o;
+  output upg_done_o;
+  input upg_rx_i;
+  output upg_tx_o;
+
+  wire [14:0]upg_adr_o;
+  wire upg_clk_i;
+  wire upg_clk_o;
+  wire [31:0]upg_dat_o;
+  wire upg_done_o;
+  wire upg_rst_i;
+  wire upg_rx_i;
+  wire upg_tx_o;
+  wire upg_wen_o;
+
+  uart_bmpg_0_upg inst
+       (.upg_adr_o(upg_adr_o),
+        .upg_clk_i(upg_clk_i),
+        .upg_clk_o(upg_clk_o),
+        .upg_dat_o(upg_dat_o),
+        .upg_done_o(upg_done_o),
+        .upg_rst_i(upg_rst_i),
+        .upg_rx_i(upg_rx_i),
+        .upg_tx_o(upg_tx_o),
+        .upg_wen_o(upg_wen_o));
+endmodule
+
 module uart_bmpg_0_upg
    (upg_clk_o,
     upg_wen_o,

@@ -83,13 +83,15 @@ module CPU(input clk,
     );
     
     wire[31:0] Instruction_o;
+    wire upg_wen_i_for_prgrom;
+    assign upg_wen_i_for_prgrom = upg_wen_o  & (!upg_adr_o[14]);
     
     programrom pr(
     .rom_clk_i(clk_out1),
     .rom_adr_i(rom_addr_o),
     .upg_rst_i(upg_rst),
     .upg_clk_i(upg_clk_o),
-    .upg_wen_i(upg_wen_o),
+    .upg_wen_i(upg_wen_i_for_prgrom),
     .upg_adr_i(upg_adr_o[13:0]),
     .upg_dat_i(upg_dat_o),
     .upg_done_i(upg_done_o),
@@ -194,6 +196,8 @@ module CPU(input clk,
     
     wire [31:0] m_rdata;
     wire [31:0] data_to_dmem_or_io;
+    wire upg_wen_i_for_dmem;
+    assign upg_wen_i_for_dmem = upg_wen_o & upg_adr_o[14];
     Dmemory32 dmemory32(
     .clock(clk_out1),
     .memWrite(memwrite),
@@ -202,7 +206,7 @@ module CPU(input clk,
     .readData(m_rdata),
     .upg_rst_i(upg_rst),
     .upg_clk_i(upg_clk_o),
-    .upg_wen_i(upg_wen_o),
+    .upg_wen_i(upg_wen_i_for_dmem),
     .upg_adr_i(upg_adr_o[13:0]),
     .upg_dat_i(upg_dat_o),
     .upg_done_i(upg_done_o)
@@ -221,7 +225,7 @@ module CPU(input clk,
     .r_rdata(mem_or_io_data),
     .data_to_dmem_or_io(data_to_dmem_or_io)
     );
-
+    
     assign io_wdata = data_to_dmem_or_io[23:0];
     
 endmodule
