@@ -22,7 +22,7 @@
 
 module CPU(input clk,
            input [23:0] io_rdata,
-           output [23:0] io_wdata,
+           output reg [23:0] io_wdata,
            input fpga_rst,         // active high
            input start_uart,       // active high
            input rx,               // receive data by uart
@@ -226,6 +226,11 @@ module CPU(input clk,
     .data_to_dmem_or_io(data_to_dmem_or_io)
     );
     
-    assign io_wdata = data_to_dmem_or_io[23:0];
+    
+    always @(*) begin
+        if (iowrite) begin
+            io_wdata = data_to_dmem_or_io[23:0];
+        end
+    end
     
 endmodule

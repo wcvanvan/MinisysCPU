@@ -31,8 +31,7 @@ module cpu_tb();
     wire tx;
     initial begin
         #10000 rst = 1'b0;
-        #50 io_rdata = 32'b1111_1111_1111_1111_0000_0001;
-        #50 io_rdata = 32'b1111_1111_1111_1111_0000_1001;
+        #50 io_rdata = 32'b1000_0000_0000_0001_0000_0000;
     end
     CPU cpu(
     .clk(clk),
