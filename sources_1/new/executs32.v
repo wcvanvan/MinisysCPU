@@ -72,9 +72,11 @@ module Executs32(Read_data_1,Read_data_2,Sign_extend,Function_opcode,Exe_opcode,
     end
 
     always @* begin
-        //set operation (slt, slti, sltu, sltiu)
-        if(((ALU_ctl==3'b111) && (Exe_code[3]==1)) || Exe_opcode == 6'b001010 || Exe_opcode == 6'b001011)
+        //set operation
+        if((Function_opcode == 6'b101010 && Exe_opcode == 6'b000000) || Exe_opcode == 6'b001010) // slt, slti
             ALU_Result = ($signed(Ainput) < $signed(Binput)) ? 1 : 0;
+        else if ((Function_opcode == 6'b101011 && Exe_opcode == 6'b000000) || Exe_opcode == 6'b001011) // sltu, sltiu
+            ALU_Result = (Ainput < Binput) ? 1 : 0;
         //lui operation
         else if(Exe_opcode == 6'b001111)
             ALU_Result[31:0]= {Sign_extend[15:0], 16'h0000};
