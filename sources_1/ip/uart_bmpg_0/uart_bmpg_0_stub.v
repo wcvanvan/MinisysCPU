@@ -3,8 +3,8 @@
 // Tool Version: Vivado v.2017.4 (win64) Build 2086221 Fri Dec 15 20:55:39 MST 2017
 // Date        : Mon May  9 17:13:49 2022
 // Host        : Fengs-Laptop running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode synth_stub
-//               c:/Users/dazhi/sccpu/sccpu.srcs/sources_1/ip/uart_bmpg_0/uart_bmpg_0_stub.v
+// Command     : write_verilog -force -mode synth_stub -rename_top uart_bmpg_0 -prefix
+//               uart_bmpg_0_ uart_bmpg_0_stub.v
 // Design      : uart_bmpg_0
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7a100tfgg484-1

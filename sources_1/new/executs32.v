@@ -1,7 +1,5 @@
 module Executs32(Read_data_1,Read_data_2,Sign_extend,Function_opcode,Exe_opcode,ALUOp,
-                 Shamt,ALUSrc,I_format,Zero,Jr,Sftmd,ALU_Result,Addr_Result,PC_plus_4,
-                 HI_result,
-                 LO_result
+                 Shamt,ALUSrc,I_format,Zero,Jr,Sftmd,ALU_Result,Addr_Result,PC_plus_4
                  );
     input[31:0]  Read_data_1;       // from Decoder, Read_data_1
     input[31:0]  Read_data_2;       // from Decoder, Read_data_2
@@ -22,9 +20,6 @@ module Executs32(Read_data_1,Read_data_2,Sign_extend,Function_opcode,Exe_opcode,
     output reg [31:0] ALU_Result;   // calculation results
     output [31:0] Addr_Result;      // calculated address results
 
-    output reg [31:0] HI_result;    // mult, multu, div, divu
-    output reg [31:0] LO_result;    // mult, multu, div, divu
-
     wire[31:0] Ainput,Binput;       // two operands for calculation
     wire[5:0] Exe_code;             // for generating ALU_contrl
     wire[2:0] ALU_ctl;              // control signals which affact operation in ALU directely
@@ -35,7 +30,7 @@ module Executs32(Read_data_1,Read_data_2,Sign_extend,Function_opcode,Exe_opcode,
     assign Ainput = Read_data_1;
     assign Binput = (ALUSrc == 0) ? Read_data_2 : Sign_extend[31:0];
 
-    assign Exe_code = (I_format == 0) ? Function_opcode : {3'b000, Exe_opcode[2:0]};
+    assign Exe_code = (I_format==0) ? Function_opcode : {3'b000, Exe_opcode[2:0]};
 
     assign ALU_ctl[0] = (Exe_code[0] | Exe_code[3]) & ALUOp[1];
     assign ALU_ctl[1] = ((~Exe_code[2]) | (~ALUOp[1]));
@@ -45,24 +40,6 @@ module Executs32(Read_data_1,Read_data_2,Sign_extend,Function_opcode,Exe_opcode,
 
     assign Addr_Result = PC_plus_4 + (Sign_extend << 2);
     assign Zero = ALU_output_mux == 0 ? 1 : 0;
-
-    always @* begin
-        if (Exe_opcode == 6'b000000) begin
-            case(Function_opcode)
-                6'b01_1000: {HI_result, LO_result} = $signed(Read_data_1) * $signed(Read_data_2); // mult
-                6'b01_1001: {HI_result, LO_result} = Read_data_1 * Read_data_2;                   // multu
-                6'b01_1010: begin                                                                 // div
-                    LO_result = $signed(Read_data_1) / $signed(Read_data_2);
-                    HI_result = $signed(Read_data_1) % $signed(Read_data_2);
-                end
-                6'b01_1011: begin                                                                 // divu
-                    LO_result = Read_data_1 / Read_data_2;
-                    HI_result = Read_data_1 % Read_data_2;
-                end
-                default: {HI_result, LO_result} = 64'h0000_0000_0000_0000;
-            endcase
-        end
-    end
 
     always @* begin
         case(ALU_ctl)
@@ -95,7 +72,7 @@ module Executs32(Read_data_1,Read_data_2,Sign_extend,Function_opcode,Exe_opcode,
     end
 
     always @* begin
-        //set operation (slt, slti, sltu, sltiu)
+        //set operation
         if((Function_opcode == 6'b101010 && Exe_opcode == 6'b000000) || Exe_opcode == 6'b001010) // slt, slti
             ALU_Result = ($signed(Ainput) < $signed(Binput)) ? 1 : 0;
         else if ((Function_opcode == 6'b101011 && Exe_opcode == 6'b000000) || Exe_opcode == 6'b001011) // sltu, sltiu
