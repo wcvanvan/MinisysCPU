@@ -77,7 +77,8 @@ module Control32(Opcode,
 
     assign MemWrite     = ((sw == 1) && (ALUResultHigh != 22'h3FFFFF)) ? 4'b1111 : 4'b0000;
     
-    assign MemRead      = ((lw == 1) && (ALUResultHigh != 22'h3FFFFF)) ? 1'b1:1'b0;
+    assign MemRead      = ((lw == 1 || Do_load) && (ALUResultHigh != 22'h3FFFFF)) ? 1'b1:1'b0;
+
     assign IORead       = ((lw == 1) && (ALUResultHigh == 22'h3FFFFF)) ? 1'b1:1'b0;
     assign IOWrite      = ((sw == 1) && (ALUResultHigh == 22'h3FFFFF)) ? 1'b1:1'b0;
     assign MemOrIOtoReg = IORead || MemRead;

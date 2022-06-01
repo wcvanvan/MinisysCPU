@@ -171,12 +171,22 @@ module CPU(input clk,
 
     wire [31:0] r_wdata;
     wire [31:0] HI_data, LO_data;
+    wire [31:0] extended_load_data;
+    wire [31:0] m_rdata;
+
+    extender extend_load(
+        .Do_load(Do_load),
+        .Do_signed(Do_signed),
+        .Do_Byte(Do_Byte),
+        .Do_Half(Do_Half),
+        .Word_in(m_rdata),
+        .Extended_out(extended_load_data)
+    );
 
     Decode32 decode32(
     .clock(clk_out1),
     .reset(rst),
     .RegWrite(regwrite),
-
     .HI_LO_write(HI_LO_write),
     .HI_LO_move(HI_LO_move),
     .HI_data(HI_data),
@@ -212,7 +222,7 @@ module CPU(input clk,
     .ALU_Result(alu_result),
     .Addr_Result(addr_in),
     .HI_result(HI_data),
-    .LO_result(LO_data),
+    .LO_result(LO_data)
     );
 
     wire [31:0] Address_out;
@@ -230,15 +240,13 @@ module CPU(input clk,
     wire [31:0] data_to_dmem_or_io;
     extender extend(
         .Do_load(Do_load),
-        .Do_signed(Do_signed)
+        .Do_signed(Do_signed),
         .Do_Byte(Do_Byte),
         .Do_Half(Do_Half),
         .Word_in(data_to_dmem_or_io),
         .Extended_out(extended_word)
     );
 
-    
-    wire [31:0] m_rdata;
     wire upg_wen_i_for_dmem;
     assign upg_wen_i_for_dmem = (upg_wen_o & upg_adr_o[14]) ? 4'b1111 : 4'b0000;
     Dmemory32 dmemory32(
@@ -263,7 +271,7 @@ module CPU(input clk,
     .ioWrite(iowrite),
     .addr_in(alu_result),
     .addr_out(addr_out),
-    .m_rdata(m_rdata),
+    .m_rdata(extended_load_data),
     .io_rdata(io_rdata),
     .r_wdata(r_wdata),
     .r_rdata(mem_or_io_data),
