@@ -123,7 +123,7 @@ module CPU(input clk,
     wire alusrc;
     wire mem_or_io_to_reg;
     wire regwrite;
-    wire memwrite;
+    wire [3:0] memwrite;
     wire memread;
     wire ioread;
     wire iowrite;
@@ -135,6 +135,10 @@ module CPU(input clk,
     wire [31:0] alu_result;
     wire [31:0] read_data_2;
     wire [31:0] sign_extend;
+
+    wire HI_LO_write;
+    wire [1:0] HI_LO_move;
+    wire Do_Byte, Do_Half, Do_load, Do_signed;
     
     Control32 control32(
     .ALUResultHigh(alu_result[31:10]),
@@ -155,14 +159,29 @@ module CPU(input clk,
     .I_format(iformat),
     .Sftmd(sftmd),
     .ALUOp(aluop),
-    .Jr(jr)
+    .Jr(jr),
+    .HI_LO_write(HI_LO_write),
+    .HI_LO_move(HI_LO_move),
+    .Do_Byte(Do_Byte),
+    .Do_Half(Do_Half),
+    .Do_load(Do_load),
+    .Do_signed(Do_signed)
     );
-    
+
+
     wire [31:0] r_wdata;
+    wire [31:0] HI_data, LO_data;
+
     Decode32 decode32(
     .clock(clk_out1),
     .reset(rst),
     .RegWrite(regwrite),
+
+    .HI_LO_write(HI_LO_write),
+    .HI_LO_move(HI_LO_move),
+    .HI_data(HI_data),
+    .LO_data(LO_data),
+
     .RegDst(regdst),
     .MemOrIOToReg(mem_or_io_to_reg),
     .Jal(jal),
@@ -191,18 +210,42 @@ module CPU(input clk,
     .Jr(jr),
     .Zero(zero),
     .ALU_Result(alu_result),
-    .Addr_Result(addr_in)
+    .Addr_Result(addr_in),
+    .HI_result(HI_data),
+    .LO_result(LO_data),
     );
+
+    wire [31:0] Address_out;
+    wire [3:0]  memwrite_out;
+    new_dmem_address new_addre(
+        .Do_Byte(Do_Byte),
+        .Do_Half(Do_Half),
+        .Address_in(addr_out),
+        .Address_out(Address_out),
+        .MemWrite_ori(memwrite), 
+        .MemWrite(memwrite_out)
+    );
+
+    wire [31:0] extended_word;
+    wire [31:0] data_to_dmem_or_io;
+    extender extend(
+        .Do_load(Do_load),
+        .Do_signed(Do_signed)
+        .Do_Byte(Do_Byte),
+        .Do_Half(Do_Half),
+        .Word_in(data_to_dmem_or_io),
+        .Extended_out(extended_word)
+    );
+
     
     wire [31:0] m_rdata;
-    wire [31:0] data_to_dmem_or_io;
     wire upg_wen_i_for_dmem;
-    assign upg_wen_i_for_dmem = upg_wen_o & upg_adr_o[14];
+    assign upg_wen_i_for_dmem = (upg_wen_o & upg_adr_o[14]) ? 4'b1111 : 4'b0000;
     Dmemory32 dmemory32(
     .clock(clk_out1),
-    .memWrite(memwrite),
-    .address(addr_out),
-    .writeData(data_to_dmem_or_io),
+    .memWrite(memwrite_out),
+    .address(Address_out),
+    .writeData(extended_word),
     .readData(m_rdata),
     .upg_rst_i(upg_rst),
     .upg_clk_i(upg_clk_o),
@@ -211,7 +254,8 @@ module CPU(input clk,
     .upg_dat_i(upg_dat_o),
     .upg_done_i(upg_done_o)
     );
-    
+
+
     MemOrIO mem_or_io(
     .mRead(memread),
     .mWrite(memwrite),

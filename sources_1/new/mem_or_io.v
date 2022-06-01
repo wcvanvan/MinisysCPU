@@ -33,7 +33,7 @@ module MemOrIO(mRead,
                data_to_dmem_or_io);
     
     input mRead; // read memory, from Controller
-    input mWrite; // write memory, from Controller
+    input [3:0] mWrite; // write memory, from Controller
     input ioRead; // read IO, from Controller
     input ioWrite; // write IO, from Controller
     input[31:0] addr_in; // from alu_result in ALU
@@ -51,7 +51,7 @@ module MemOrIO(mRead,
     // Chip select signal of Led and Switch are all active high;
     
     always @(*) begin
-        if ((mWrite == 1)||(ioWrite == 1)) begin
+        if ((mWrite == 4'b1111)||(ioWrite == 1)) begin
             data_to_dmem_or_io = r_rdata;
             end
         else begin

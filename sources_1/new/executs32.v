@@ -11,7 +11,7 @@ module Executs32(Read_data_1,Read_data_2,Sign_extend,Function_opcode,Exe_opcode,
     input[31:0]  PC_plus_4;         // from I-fetch, PC+4
 
     input[1:0]   ALUOp;             // from Controller
-    input        ALUSrc;            // from Controller, meaning the 2nd operand is immediate (except beqï¼Œbne)
+    input        ALUSrc;            // from Controller, meaning the 2nd operand is immediate (except beq£¬bne)
     input        I_format;          // from Controller, meaning I-form instruction, except beq, bne, lw, sw
     input        Sftmd;             // from Controller, meaning shift instruction
     input        Jr;                // from Controller, meaning jr instruction

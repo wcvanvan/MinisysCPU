@@ -21,13 +21,13 @@
 
 
 module Dmemory32(input clock,
-                 input memWrite,
+                 input [3:0] memWrite,
                  input [31:0] address,
                  input [31:0] writeData,
                  output [31:0] readData,
                  input upg_rst_i,        // UPG reset (Active High)
                  input upg_clk_i,        // UPG clk_i (10MHz)
-                 input upg_wen_i,        // UPG write enable
+                 input [3:0] upg_wen_i,        // UPG write enable
                  input [13:0] upg_adr_i, // UPG write address
                  input [31:0] upg_dat_i, // UPG write data
                  input upg_done_i);      // 1 if programming is finished);
