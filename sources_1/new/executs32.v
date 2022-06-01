@@ -74,7 +74,7 @@ module Executs32(Read_data_1,Read_data_2,Sign_extend,Function_opcode,Exe_opcode,
             3'b011: ALU_output_mux = Ainput + Binput;   // addu, addiu
             3'b100: ALU_output_mux = Ainput ^ Binput;   // xor, xori
             3'b101: ALU_output_mux = ~(Ainput | Binput);// nor, !! lui
-            3'b110: ALU_output_mux = Ainput - Binput;   // sub, slti, beq, bne
+            3'b110: ALU_output_mux = $signed(Ainput) - $signed(Binput);   // sub, slti, beq, bne
             3'b111: ALU_output_mux = Ainput - Binput;   // subu, sltiu, slt, sltu
             default: ALU_output_mux = 32'h0000_0000;
         endcase

@@ -18,9 +18,10 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-module regfiles(
+module regfiles(        // A submodule of the decoder, which is down below.
+    // Cannot put into another file due to some unkown Vivado bugs.
     input clock, reset,
-    input regWrite,
+    input regWrite,      // Whether or not write data to the registers.
     // following two are for mult/div, if they are valid, regWrite must be zero!
     // when using HI_LO_move, writeDst is also used
     input HI_LO_write,       // 1 for write both (mult, div), 0 for do not write
@@ -28,24 +29,17 @@ module regfiles(
     input [32:0] HI_data,    // data going to write HI
     input [32:0] LO_data,    // data going to write LO
 
-    input [4:0] read1,
-    input [4:0] read2,
-    input [4:0] writeDst,
-    input [31:0] writeData,
-    output [31:0] data1,
-    output [31:0] data2
+    input [4:0] read1,          // The first address to read from.
+    input [4:0] read2,          // The second address to read from.
+    input [4:0] writeDst,      // The address to write to.
+    input [31:0] writeData,  // The data to be written.
+    output [31:0] data1,      // The data in the register read1.
+    output [31:0] data2      // The data in the register read2.
     );
     reg [31:0] registers[0:31];
 
     reg [31:0] HI;
     reg [31:0] LO;
-
-//    always @(posedge clock) begin
-//        if (HI_LO_write) begin
-//            HI <= HI_data;
-//            LO <= LO_data;
-//        end
-//    end
 
     always @(posedge clock) begin
         if(reset == 1'b1) begin
@@ -84,7 +78,7 @@ module regfiles(
             HI            <= 32'b0;
             LO            <= 32'b0;
         end
-        else if(regWrite == 1'b1 && writeDst != 5'b0) registers[writeDst] <= writeData;
+        else if(regWrite == 1'b1 && writeDst != 5'b0) registers[writeDst] <= writeData;      // Write data if regWrite is 1 and it is not $0.
         else begin
             case (HI_LO_move)
                 2'b10: registers[writeDst] <= HI;
@@ -111,8 +105,8 @@ module Decode32(
     input [31:0] opcplus4,      // PC + 4
     input [31:0] Instruction,   // the 32-bit instruction
 
-    input write_HI_LO,
-    input [1:0] move_HI_LO,
+    input write_HI_LO,           // 1 for write, 0 for not.
+    input [1:0] move_HI_LO,  // 10 for mfhi, 01 for mflo, otherwise nothing.
     input [31:0] ALU_HI,        // HI data from ALU
     input [31:0] ALU_LO,        // LO data from ALU
 

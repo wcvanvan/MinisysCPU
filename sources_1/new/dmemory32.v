@@ -21,7 +21,7 @@
 
 
 module Dmemory32(input clock,
-                 input [3:0] memWrite,
+                 input [3:0] memWrite,    // 
                  input [31:0] address,
                  input [31:0] writeData,
                  output [31:0] readData,
@@ -31,6 +31,8 @@ module Dmemory32(input clock,
                  input [13:0] upg_adr_i, // UPG write address
                  input [31:0] upg_dat_i, // UPG write data
                  input upg_done_i);      // 1 if programming is finished);
+                 
+    wire clk;
     assign clk = !clock;
     
     /* CPU work on normal mode when kickOff is 1. CPU work on Uart communicate mode when kickOff is 0.*/
