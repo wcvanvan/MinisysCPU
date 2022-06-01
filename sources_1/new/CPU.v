@@ -146,12 +146,12 @@ module CPU(input clk,
     .Function_opcode(funct),
     .RegDST(regdst),
     .ALUSrc(alusrc),
-    .MemOrIOtoReg(mem_or_io_to_reg), // modify
+    .MemOrIOtoReg(mem_or_io_to_reg), 
     .RegWrite(regwrite),
     .MemWrite(memwrite),
-    .MemRead(memread), // modify
-    .IORead(ioread), // modify
-    .IOWrite(iowrite), // modify
+    .MemRead(memread), 
+    .IORead(ioread), 
+    .IOWrite(iowrite), 
     .Branch(branch),
     .nBranch(nbranch),
     .Jmp(jmp),
@@ -173,7 +173,7 @@ module CPU(input clk,
     wire [31:0] HI_data, LO_data;
     wire [31:0] extended_load_data;
     wire [31:0] m_rdata;
-
+    // extend to 32 bits, after read mem (lh, lb)
     extender extend_load(
         .Do_load(Do_load),
         .Do_signed(Do_signed),
@@ -227,6 +227,7 @@ module CPU(input clk,
 
     wire [31:0] Address_out;
     wire [3:0]  memwrite_out;
+    // standard new address for store/load halfword/byte
     new_dmem_address new_addre(
         .Do_load(Do_load),
         .Do_Byte(Do_Byte),
@@ -239,7 +240,8 @@ module CPU(input clk,
 
     wire [31:0] extended_word;
     wire [31:0] data_to_dmem_or_io;
-    extender extend(
+    // extend to 32 bits, for store halfword/byte
+    extender extend_store(
         .Do_load(Do_load),
         .Do_signed(Do_signed),
         .Do_Byte(Do_Byte),
