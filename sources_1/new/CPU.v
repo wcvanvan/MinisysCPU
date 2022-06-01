@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company:
-// Engineer:
+// Company: SUSTech
+// Engineer: 
 //
 // Create Date: 2022/05/18 22:12:18
 // Design Name:
@@ -30,15 +30,15 @@ module CPU(input clk,
     
     wire clk_out1, clk_out2;
     cpuclk cpuclk0(
-    .clk_in1(clk),
-    .clk_out1(clk_out1), // for cpu use
-    .clk_out2(clk_out2) // for uart device use
+    .clk_in1(clk),             // on-board 100MHz clock
+    .clk_out1(clk_out1), // for cpu use, 23MHz
+    .clk_out2(clk_out2) // for uart device use, 10MHz
     );
     
     wire rst;
     wire [31:0] pcplus4;
     wire [31:0] addr_in; // alu calculated current address + imm
-    wire [31:0] addr_out;
+    wire [31:0] addr_out;  // = addr_in for now, reserved for the future extension, and to avoid multi-driven net
     wire zero;
     wire jr;
     wire jal;
@@ -47,9 +47,9 @@ module CPU(input clk,
     wire nbranch;
     wire [31:0] read_data_1;
     wire [31:0] instruction;
-    wire [31:0] branch_base_addr;
-    wire [31:0] link_addr;
-    wire [13:0] rom_addr_o;
+    wire [31:0] branch_base_addr;  // original addr_in, bu gan delete
+    wire [31:0] link_addr;          // used for jal to store in $ra
+    wire [13:0] rom_addr_o;     // current pc, do not use pc, which could lead to multi-driven net
     
     // UART Programmer Pinouts
     wire upg_clk_o;
@@ -136,7 +136,7 @@ module CPU(input clk,
     wire [31:0] read_data_2;
     wire [31:0] sign_extend;
 
-    wire HI_LO_write;
+    wire HI_LO_write;      // whether or not write to HI or LO
     wire [1:0] HI_LO_move;
     wire Do_Byte, Do_Half, Do_load, Do_signed;
     
@@ -169,10 +169,10 @@ module CPU(input clk,
     );
 
 
-    wire [31:0] r_wdata;
+    wire [31:0] r_wdata;        // register write data
     wire [31:0] HI_data, LO_data;
     wire [31:0] extended_load_data;
-    wire [31:0] m_rdata;
+    wire [31:0] m_rdata;       // memory read data
     // extend to 32 bits, after read mem (lh, lb)
     extender extend_load(
         .Do_load(Do_load),
@@ -225,8 +225,8 @@ module CPU(input clk,
     .LO_result(LO_data)
     );
 
-    wire [31:0] Address_out;
-    wire [3:0]  memwrite_out;
+    wire [31:0] Address_out;     // standard address, used for sh, sb, lh, lb...
+    wire [3:0]  memwrite_out;  // memWrite enable
     // standard new address for store/load halfword/byte
     new_dmem_address new_addre(
         .Do_load(Do_load),
