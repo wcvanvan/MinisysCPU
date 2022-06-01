@@ -35,7 +35,7 @@ module Control32(Opcode,
     output Jr;
     output RegDST;
     output ALUSrc;
-    output MemOrIOtoReg;
+    output MemOrIOtoReg; // inform decoder
     output RegWrite;
     output MemRead;
     output [3:0] MemWrite;
@@ -43,7 +43,7 @@ module Control32(Opcode,
     output IOWrite;
     output Branch;
     output nBranch;
-    output Jmp;
+    output Jmp; // inform ifetch
     output Jal;
     wire R_type;
     output I_format;  // I-Type instruction except Branch, nBranch, lw, sw
@@ -58,7 +58,7 @@ module Control32(Opcode,
     output Do_load;
     output Do_signed;
 
-    wire lw;
+    wire lw; // used to decide write/read signal
     wire sw;
     wire HI_LO;
     assign R_type       = (Opcode == 6'b000000)? 1'b1:1'b0;

@@ -83,7 +83,7 @@ module CPU(input clk,
     );
     
     wire[31:0] Instruction_o;
-    wire upg_wen_i_for_prgrom;
+    wire upg_wen_i_for_prgrom; // uart enable for prgrom
     assign upg_wen_i_for_prgrom = upg_wen_o  & (!upg_adr_o[14]);
     
     programrom pr(
@@ -250,8 +250,8 @@ module CPU(input clk,
         .Extended_out(extended_word)
     );
 
-    wire upg_wen_i_for_dmem;
-    assign upg_wen_i_for_dmem = (upg_wen_o & upg_adr_o[14]) ? 4'b1111 : 4'b0000;
+    wire upg_wen_i_for_dmem; // uart enable for dmem
+    assign upg_wen_i_for_dmem = (upg_wen_o & upg_adr_o[14]) ? 4'b1111 : 4'b0000; 
     Dmemory32 dmemory32(
     .clock(clk_out1),
     .memWrite(memwrite_out),
