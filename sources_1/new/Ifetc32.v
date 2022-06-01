@@ -16,18 +16,18 @@ module Ifetc32(Instruction_i,
                link_addr,
                rom_addr_o);
     input[31:0] Instruction_i; // read instruction from outside prgrom
-    output[31:0] Instruction;			// 根据PC的�?�从存放指令的prgrom中取出的指令
-    output[31:0] branch_base_addr;      // 对于有条件跳转类的指令�?�言，该值为(pc+4)送往ALU
-    input[31:0]  Addr_result;            // 来自ALU,为ALU计算出的跳转地址
+    output[31:0] Instruction;			// instruction given to other modules, decided by instruction_i
+    output[31:0] branch_base_addr;      // give (pc+4) to ALU for branch
+    input[31:0]  Addr_result;            // from ALU, branch addr
     input[31:0]  Read_data_1;           // 来自Decoder，jr指令用的地址
-    input        Branch;                // 来自控制单元
-    input        nBranch;               // 来自控制单元
-    input        Jmp;                   // 来自控制单元
-    input        Jal;                   // 来自控制单元
-    input        Jr;                   // 来自控制单元
-    input        Zero;                  //来自ALU，Zero�????1表示两个值相等，反之表示不相�????
-    input        clock,reset;           //时钟与复�????,复位信号用于给PC赋初始�?�，复位信号高电平有�????
-    output[31:0] link_addr;             // JAL指令专用的PC+4
+    input        Branch;                // from controller
+    input        nBranch;               // from controller
+    input        Jmp;                   // from controller
+    input        Jal;                   // from controller
+    input        Jr;                   // from controller
+    input        Zero;                  // 1 for equals, 0 for not
+    input        clock,reset; 
+    output[31:0] link_addr;             // pc+4 for jal
     output[13:0] rom_addr_o; // give the current pc to prgrom`
     reg [31:0]pc;
     reg [31:0]next_pc;
