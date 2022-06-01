@@ -187,10 +187,10 @@ module CPU(input clk,
     .clock(clk_out1),
     .reset(rst),
     .RegWrite(regwrite),
-    .HI_LO_write(HI_LO_write),
-    .HI_LO_move(HI_LO_move),
-    .HI_data(HI_data),
-    .LO_data(LO_data),
+    .write_HI_LO(HI_LO_write),
+    .move_HI_LO(HI_LO_move),
+    .ALU_HI(HI_data),
+    .ALU_LO(LO_data),
 
     .RegDst(regdst),
     .MemOrIOToReg(mem_or_io_to_reg),
@@ -228,6 +228,7 @@ module CPU(input clk,
     wire [31:0] Address_out;
     wire [3:0]  memwrite_out;
     new_dmem_address new_addre(
+        .Do_load(Do_load),
         .Do_Byte(Do_Byte),
         .Do_Half(Do_Half),
         .Address_in(addr_out),
@@ -266,7 +267,7 @@ module CPU(input clk,
 
     MemOrIO mem_or_io(
     .mRead(memread),
-    .mWrite(memwrite),
+    .mWrite(memwrite_out),
     .ioRead(ioread),
     .ioWrite(iowrite),
     .addr_in(alu_result),

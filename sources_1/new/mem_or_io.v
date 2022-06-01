@@ -51,7 +51,7 @@ module MemOrIO(mRead,
     // Chip select signal of Led and Switch are all active high;
     
     always @(*) begin
-        if ((mWrite == 4'b1111)||(ioWrite == 1)) begin
+        if ((mWrite != 4'b0000)||(ioWrite == 1)) begin
             data_to_dmem_or_io = r_rdata;
             end
         else begin

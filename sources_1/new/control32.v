@@ -60,10 +60,10 @@ module Control32(Opcode,
 
     wire lw;
     wire sw;
-
+    wire HI_LO;
     assign R_type       = (Opcode == 6'b000000)? 1'b1:1'b0;
     assign HI_LO        = (R_type && Function_opcode[5:4] == 2'b01) ? 1'b1 : 1'b0;
-    assign RegDST       = R_type;
+    assign RegDST       = R_type && !HI_LO_write;
     assign I_format     = (Opcode[5:3] == 3'b001)?1'b1:1'b0;
     assign lw           = (Opcode == 6'b100011)? 1'b1:1'b0;
     assign sw           = (Opcode == 6'b101011)? 1'b1:1'b0;
@@ -72,8 +72,10 @@ module Control32(Opcode,
     assign Jmp          = (Opcode == 6'b000010)? 1'b1:1'b0;
     assign Branch       = (Opcode == 6'b000100)? 1'b1:1'b0;
     assign nBranch      = (Opcode == 6'b000101)? 1'b1:1'b0;
-    assign RegWrite     = ((R_type && !HI_LO && !Jr) || I_format || lw || Jal);
-    assign ALUSrc       = (I_format || Opcode == 6'b10_0011 || Opcode == 6'b10_1011) ? 1'b1 : 1'b0;
+
+    assign RegWrite     = ((R_type && !HI_LO && !Jr) || I_format || lw || Do_load || Jal);
+//    assign ALUSrc       = (I_format || Opcode == 6'b10_0011 || Opcode == 6'b10_1011) ? 1'b1 : 1'b0;
+    assign ALUSrc       = (I_format || Opcode[5:4] == 2'b10) ? 1'b1 : 1'b0;
 
     assign MemWrite     = ((sw == 1) && (ALUResultHigh != 22'h3FFFFF)) ? 4'b1111 : 4'b0000;
     
@@ -85,8 +87,8 @@ module Control32(Opcode,
     assign Sftmd        = (R_type && Function_opcode[5:3] == 3'b000)? 1'b1:1'b0;
     assign ALUOp        = {(R_type || I_format),(Branch || nBranch)};
 
-    assign write_HI_LO  = (R_type && Function_opcode[5:2] == 4'b0110) ? 1'b1 : 1'b0;
-    assign move_HI_LO   = (R_type && Function_opcode == 6'b01_0000) ? 2'b10
+    assign HI_LO_write  = (R_type && Function_opcode[5:2] == 4'b0110) ? 1'b1 : 1'b0;
+    assign HI_LO_move   = (R_type && Function_opcode == 6'b01_0000) ? 2'b10
                         : ((R_type && Function_opcode == 6'b01_0010) ? 2'b01 : 2'b00);
 
     assign Do_Byte      = (Opcode == 6'b100000 || Opcode == 6'b100100 || Opcode == 6'b101000);

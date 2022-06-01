@@ -40,17 +40,12 @@ module regfiles(
     reg [31:0] HI;
     reg [31:0] LO;
 
-    always @(posedge clock) begin
-        if (HI_LO_write) begin
-            HI <= HI_data;
-            LO <= LO_data;
-        end
-
-        case (HI_LO_move)
-            2'b10: registers[writeDst] <= HI;
-            2'b01: registers[writeDst] <= LO;
-        endcase
-    end
+//    always @(posedge clock) begin
+//        if (HI_LO_write) begin
+//            HI <= HI_data;
+//            LO <= LO_data;
+//        end
+//    end
 
     always @(posedge clock) begin
         if(reset == 1'b1) begin
@@ -86,8 +81,20 @@ module regfiles(
             registers[29] <= 32'b0;
             registers[30] <= 32'b0;
             registers[31] <= 32'b0;
+            HI            <= 32'b0;
+            LO            <= 32'b0;
         end
         else if(regWrite == 1'b1 && writeDst != 5'b0) registers[writeDst] <= writeData;
+        else begin
+            case (HI_LO_move)
+                2'b10: registers[writeDst] <= HI;
+                2'b01: registers[writeDst] <= LO;
+            endcase
+            if (HI_LO_write) begin
+                HI <= HI_data;
+                LO <= LO_data;
+            end
+        end
     end
     assign data1 = registers[read1];
     assign data2 = registers[read2];
